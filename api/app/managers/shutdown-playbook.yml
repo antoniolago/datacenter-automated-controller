@@ -1,0 +1,13 @@
+- name: Shutdown machine
+  become: true
+  hosts: all
+  # vars:
+  #   ansible_ssh_private_key_file: /ssh/keys/SNPXX/id_pub.rsa
+  tasks:
+    - name: Shutdown Linux machine
+      shell: "shutdown now"
+      when: "'ansible_os_family' in hostvars[inventory_hostname] and hostvars[inventory_hostname]['ansible_os_family'] != 'Windows'"
+
+    - name: Shutdown Windows machine
+      win_shell: "shutdown /s /t 0"
+      when: "'ansible_os_family' in hostvars[inventory_hostname] and hostvars[inventory_hostname]['ansible_os_family'] == 'Windows'"

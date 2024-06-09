@@ -1,0 +1,15 @@
+FROM python:3.7.16-alpine3.16
+WORKDIR /api
+RUN mkdir /shared
+ENV PYTHONPATH=/shared:$PYTHONPATH
+
+RUN apk update && apk add nut gcc musl-dev libffi-dev
+
+RUN pip install --upgrade pip
+COPY ./api/requirements.txt ./requirements.txt
+RUN pip install -r requirements.txt
+COPY ./api /api
+COPY ./shared /shared
+#Gotta install Adafruit_DHT manually inside the prod container since the builder is not a PI environment
+ENTRYPOINT ["sh", "-c", "pip install Adafruit_DHT && python /api/main.py"]
+# ENTRYPOINT [ "tail", "-f", "/dev/null" ]

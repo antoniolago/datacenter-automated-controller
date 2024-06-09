@@ -1,0 +1,19 @@
+FROM python:3.7.16-alpine3.16
+WORKDIR /nut-launcher
+ENV PYTHONPATH=/shared:$PYTHONPATH
+
+RUN apk update && apk add nut openssh
+
+#SSH CLIENT KEYS
+COPY ./nut-launcher/ssh/* /root/.ssh/
+RUN chmod 600 /root/.ssh/id_rsa
+
+RUN pip install --upgrade pip
+COPY ./nut-launcher/requirements.txt ./requirements.txt
+RUN pip install -r requirements.txt
+
+COPY ./nut-launcher /nut-launcher
+COPY ./shared /shared
+
+# ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+ENTRYPOINT ["python", "/nut-launcher/main.py"]

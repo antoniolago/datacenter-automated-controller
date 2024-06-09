@@ -1,0 +1,18 @@
+Returns application settings
+#
+---
+definitions:
+  Appsettings:
+    type: object
+    properties:
+      name:
+        type: string
+        items:
+          $ref: '#/definitions/Appsettings'
+responses:
+  200:
+    description: Get Appsettings
+    schema:
+      $ref: '#/definitions/Appsettings'
+    examples:
+      id: "1"

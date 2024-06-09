@@ -1,0 +1,7 @@
+{
+	"short_name": "PSM",
+	"name": "Power Supply Manager",
+	"lang": "en-US",
+	"start_url": ".",
+	"display": "standalone"
+}

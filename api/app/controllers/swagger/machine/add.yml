@@ -1,0 +1,25 @@
+Example endpoint returning a list of colors by machine
+In this example the specification is taken from external YAML file
+---
+parameters:
+  - name: name
+    in: path
+    type: string
+    #enum: ['all', 'rgb', 'cmyk']
+    required: true
+    default: MachineTest
+definitions:
+  Machine:
+    type: object
+    properties:
+      name:
+        type: string
+        items:
+          $ref: '#/definitions/Machine'
+responses:
+  200:
+    description: A list of machines
+    schema:
+      $ref: '#/definitions/Machine'
+    examples:
+      rgb: "MachineTest"

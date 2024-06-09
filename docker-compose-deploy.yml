@@ -1,0 +1,63 @@
+version: "3.2"
+services:
+  api:
+    env_file: .deploy.env
+    image: ghcr.io/antoniolago/datacenter-automated-controller-api:v0.0.64
+    privileged: true
+    ports:
+      - "5000:5000"
+    volumes:
+      - "/opt/datacenter-automated-controller/nut/ups.conf:/nut/ups.conf"
+      - "/opt/datacenter-automated-controller/api/app/datacenter-automated-controller.db:/api/app/datacenter-automated-controller.db"
+    networks:
+      - datacenter-automated-controller
+    depends_on:
+      - redis
+  frontend:
+    image: ghcr.io/antoniolago/datacenter-automated-controller-front:v0.0.64
+    ports:
+      - 8090:80
+    depends_on:
+      - api
+  nut:
+    env_file: .deploy.env
+    image: ghcr.io/antoniolago/datacenter-automated-controller-nut:v0.0.64
+    ports:
+      - "3493:3493"
+    volumes:
+      - "/opt/datacenter-automated-controller/nut/ups.conf:/etc/nut/ups.conf"
+      - "/opt/datacenter-automated-controller/shared:/shared"
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0" #YOUR UPS's USB PORT
+    networks:
+      - datacenter-automated-controller
+    depends_on:
+      - api
+  nut-launcher:
+    env_file: .deploy.env
+    image: ghcr.io/antoniolago/datacenter-automated-controller-nut-launcher:v0.0.64
+    depends_on:
+      - api
+      - nut
+    networks:
+      - datacenter-automated-controller
+
+  redis:
+    image: redis
+    volumes:
+      - "/opt/datacenter-automated-controller/redis:/data"
+    ports:
+      - "6379:${REDIS_PORT}"
+    networks:
+      - datacenter-automated-controller
+      
+  rule-applier:
+    image: ghcr.io/antoniolago/datacenter-automated-controller-rule-applier:v0.0.33
+    volumes:
+      - "/opt/datacenter-automated-controller/rule-applier/:/app"
+    networks:
+      - datacenter-automated-controller
+
+networks: 
+  datacenter-automated-controller:
+    driver: bridge

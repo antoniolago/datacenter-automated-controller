@@ -1,0 +1,16 @@
+Returns all machines
+#
+---
+definitions:
+  Machine:
+    type: object
+    properties:
+      name:
+        type: string
+        items:
+          $ref: '#/definitions/Machine'
+responses:
+  200:
+    description: All machines
+    schema:
+      $ref: '#/definitions/Machine'

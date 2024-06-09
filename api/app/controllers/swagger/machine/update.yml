@@ -1,0 +1,21 @@
+Example endpoint returning a list of colors by machine
+In this example the specification is taken from external YAML file
+---
+parameters:
+  - name: id
+    in: path
+    type: string
+    required: true
+definitions:
+  Machine:
+    type: object
+    properties:
+      name:
+        type: string
+        items:
+          $ref: '#/definitions/Machine'
+responses:
+  200:
+    description: A list of machines
+    schema:
+      $ref: '#/definitions/Machine'

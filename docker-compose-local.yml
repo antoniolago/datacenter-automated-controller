@@ -1,0 +1,73 @@
+version: "3.2"
+services:
+  api:
+    env_file: .env
+    build: ./api
+    privileged: true
+    ports:
+      - "5000:5000"
+    volumes:
+      - "./api:/api"
+      - "./shared:/shared"
+      - "./nut/ups.conf:/nut/ups.conf"
+    networks:
+      - datacenter-automated-controller
+    depends_on:
+      - redis
+  # frontend:
+  #   build: ./front
+  #   environment:
+  #     - VITE_API_URL=${API_URL}
+  #     - WATCHPACK_POLLING=true
+  #   volumes:
+  #     - './front:/app'
+  #     - '/app/node_modules'
+  #   ports:
+  #     - 8090:3000
+  #   depends_on:
+  #     - api
+  #   stdin_open: true
+  #   command: npm start
+  nut:
+    env_file: .env
+    build: ./nut
+    ports:
+      - "3493:3493"
+    volumes:
+      - "./nut:/etc/nut"
+      - "./shared:/shared"
+    networks:
+      - datacenter-automated-controller
+    depends_on:
+      - api
+  nut-launcher:
+    env_file: .env
+    depends_on:
+      - api
+      - nut
+    build: ./nut-launcher
+    volumes:
+      - ./nut-launcher:/app
+      - "./shared:/shared"
+    networks:
+      - datacenter-automated-controller
+
+  redis:
+    image: redis
+    volumes:
+      - "./redis:/data"
+    ports:
+      - "6379:${REDIS_PORT}"
+    networks:
+      - datacenter-automated-controller
+      
+  rule-applier:
+    build: ./rule-applier
+    volumes:
+      - "./rule-applier/:/app"
+    networks:
+      - datacenter-automated-controller
+networks: 
+  datacenter-automated-controller:
+    driver: bridge
+    
