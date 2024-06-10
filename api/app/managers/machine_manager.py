@@ -27,28 +27,30 @@ class MachineManager(BaseManager):
             m["isOnline"] = is_machine_online(m["host"])
         return machines
     
-    def returns_auth_vars(self, machine, path):
+    def returns_extra_vars(self, machine, privateKeyPath):
         print(machine, file=sys.stderr)
-        auth_vars = {'ansible_user': machine.credential.user if machine.credential.user else 'root'}
+        extra_vars = {'ansible_user': machine.credential.user if machine.credential.user else 'root'}
         # if machine.credential.password:
-            # auth_vars['ansible_password'] = machine.credential.password
-        auth_vars['ansible_ssh_private_key_file'] = path
+        extra_vars['ansible_password'] = machine.credential.password
+        extra_vars['ansible_os_family'] = 'Windows'
+        # extra_vars['ansible_port'] = machine.credential.sshPort if machine.credential.sshPort else 22
+        # extra_vars['ansible_ssh_private_key_file'] = privateKeyPath
         # if machine.operationalSystemId == 2:
-        #     auth_vars['ansible_connection'] = 'winrm'
-        #     auth_vars['ansible_winrm_server_cert_validation'] = 'ignore'
-        return auth_vars
+        extra_vars['ansible_connection'] = 'winrm'
+        extra_vars['ansible_winrm_server_cert_validation'] = 'ignore'
+        extra_vars['ansible_winrm_transport'] = 'basic'
+        # extra_vars['ansible_winrm_scheme'] = 'http'
+        
+        return extra_vars
 
     def shutdown(self, id):
         machine = self.get(id, "id")
         loader = DataLoader()
-        inventory_data = f"""
-        [all]
-        {machine.host}
-        """
-        inventory = InventoryManager(loader=loader, sources=[inventory_data])
+        inventory_data = f"""[all]\n{machine.host}"""
+        inventory = InventoryManager(loader=loader)
         inventory.add_host(machine.host)
-        path = '/ssh/keys/'+machine.name
-        publicKeyPath = path+'/id_rsa.pub'
+        path = '/ssh/'+machine.name
+        # publicKey     Path = path+'/id_rsa.pub'
         privateKeyPath = path+'/id_rsa'
         # os.remove(publicKeyPath)
         # os.remove(privateKeyPath)
@@ -58,16 +60,24 @@ class MachineManager(BaseManager):
         #Create machine name folder if it doesn't exis
         if not os.path.exists(path):
             os.makedirs(path)
-        with open(publicKeyPath, 'w') as f:
-            f.write(machine.credential.publicKey)
+        # print(f'creds : {machine.credential.publicKey}', file=sys.stderr) 
+        # with open(publicKeyPath, 'w') as f:
+        #     f.write(machine.credential.publicKey)
         with open(privateKeyPath, 'w') as f:
             f.write(machine.credential.privateKey)
+        #set private key to 0644
+        os.chmod(privateKeyPath, 0o600)
         # Run the playbook using Ansible Runner for the current host
+        print(f'Running playbook for {machine.host}', file=sys.stderr)
         r = run(
-            private_data_dir='/api/data',
+            # private_data_dir='/api/data',
             inventory=inventory_data,
-            extravars=self.returns_auth_vars(machine, privateKeyPath),
-            playbook='/api/app/managers/shutdown-playbook.yml'
+            extravars=self.returns_extra_vars(machine, privateKeyPath),
+            playbook='/api/app/managers/shutdown-playbook.yml',
+            # ssh_key=machine.credential.privateKey,
+            # verbosity=15,
+            suppress_env_files=True
+            # timeout=10
         )
         print(f'Results for {machine.host}:', file=sys.stderr)
         result = {
@@ -78,7 +88,6 @@ class MachineManager(BaseManager):
             'stderr': r.stderr.read() if r.stderr else None
         }
         print(result, file=sys.stderr)
-        # os.remove(path)
         if(r.rc == 0):
             return create_response(True, result, "Machine shutdown successfully")
         if(r.rc > 0):

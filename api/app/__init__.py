@@ -27,12 +27,11 @@ api_v1_cors_config = {"origins": ["http://localhost:8090", "localhost:8090", "sn
 CORS(app, resources={"/*": api_v1_cors_config})
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, command='migrate')
+
 from app.models import models
 with app.app_context():
     if not database_exists(db.engine.url): create_database(db.engine.url)
-    #migrate db if new changes are made
-    
     db.create_all()
     db.session.commit()
 from app.controllers import routes

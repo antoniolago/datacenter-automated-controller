@@ -2,6 +2,7 @@ version: "3.2"
 services:
   api:
     env_file: .env
+    hostname: dac-api
     build: ./api
     privileged: true
     ports:

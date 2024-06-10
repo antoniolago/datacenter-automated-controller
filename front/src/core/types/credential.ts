@@ -3,4 +3,6 @@ export interface ICredential {
     name: string;
     user: string;
     password: number;
+    privateKey: number;
+    publicKey: number;
 }

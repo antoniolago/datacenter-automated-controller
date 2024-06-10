@@ -2,7 +2,7 @@ FROM python:3.7.16-alpine3.16
 WORKDIR /api
 ENV PYTHONPATH=/shared:$PYTHONPATH
 
-RUN apk update && apk add nut gcc musl-dev libffi-dev
+RUN apk update && apk add nut gcc musl-dev libffi-dev openssh
 
 RUN pip install --upgrade pip
 COPY ./requirements.txt ./requirements.txt

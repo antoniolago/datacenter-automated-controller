@@ -7,6 +7,7 @@ class Credentials(db.Model):
     password = db.Column(db.Text, index=False, unique=False)
     privateKey = db.Column(db.Text, index=False, unique=False)
     publicKey = db.Column(db.Text, index=False, unique=False)
+    sshPort = db.Column(db.Text, index=False, unique=False)
 
     def __repr__(self):
         return '<Credentials> {}'.format(self.name)

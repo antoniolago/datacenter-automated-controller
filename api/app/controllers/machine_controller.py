@@ -14,7 +14,7 @@ def get_machine(id):
 
 @app.route('/machine', methods=["POST"])
 def add_machine():
-    return MachineManager().add(request.json)
+    return MachineManager().add(request.json, True)
 
 @app.route('/machine', methods=["PUT", "PATCH"])
 def update_machine():

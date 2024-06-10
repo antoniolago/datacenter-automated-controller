@@ -32,7 +32,9 @@ export const CredentialForm = (props: any) => {
         // id: props.credential?.id || 'IdTest',
         name: props.credential?.name || 'NameTest',
         user: props.credential?.user || 'UserTest',
-        password: props.credential?.password || 'PassTest'
+        password: props.credential?.password || 'PassTest',
+        publicKey: props.credential?.publicKey || 'PassTest',
+        privateKey: props.credential?.privateKey || 'PassTest'
     }
     const {
         control,
@@ -84,7 +86,7 @@ export const CredentialForm = (props: any) => {
                         aria-label="add"
                         color="primary"
                         onClick={() => setShow(true)}
-                        sx={{placeSelf: 'center'}}>
+                        sx={{ placeSelf: 'center' }}>
                         <AddIcon />
                     </IconButton>
                 }
@@ -149,7 +151,8 @@ export const CredentialForm = (props: any) => {
                                 label="Credential's user" />
                             <FormHelperText error={true}>{errors?.user?.message?.toString()}</FormHelperText>
                         </Grid>
-                        <Grid item md={12} sm={12} className="my-2">
+
+                        {/* <Grid item md={12} sm={12} className="my-2" sx={{display: 'hidden'}}>
                             <h4 className="bold mb-2">Password<span className="red">*</span></h4>
                             <TextField
                                 {...register("password")}
@@ -160,7 +163,32 @@ export const CredentialForm = (props: any) => {
                                 maxRows={999}
                                 variant="outlined"
                                 label="Credential's password" />
-                            <FormHelperText error={true}>{errors?.password?.message?.toString()}</FormHelperText>
+                        </Grid> */}
+                        <Grid item md={6} sm={6} className="my-2">
+                            <h4 className="bold mb-2">Public Key<span className="red">*</span></h4>
+                            <TextField
+                                {...register("publicKey")}
+                                error={errors?.publicKey?.message != undefined}
+                                fullWidth
+                                multiline
+                                minRows={4}
+                                maxRows={999}
+                                variant="outlined"
+                                label="Credential's publicKey" />
+                            <FormHelperText error={true}>{errors?.publicKey?.message?.toString()}</FormHelperText>
+                        </Grid>
+                        <Grid item md={6} sm={6} className="my-2">
+                            <h4 className="bold mb-2">Private Key<span className="red">*</span></h4>
+                            <TextField
+                                {...register("privateKey")}
+                                error={errors?.privateKey?.message != undefined}
+                                fullWidth
+                                multiline
+                                minRows={4}
+                                maxRows={999}
+                                variant="outlined"
+                                label="Credential's privateKey" />
+                            <FormHelperText error={true}>{errors?.privateKey?.message?.toString()}</FormHelperText>
                         </Grid>
                     </Grid>
                 </Modal >
