@@ -16,4 +16,5 @@ export const apiRoutes = {
     getSensorData: '/sensor',
     postWolMachine: '/machine/wol',
     postShutdownMachine: '/machine/shutdown',
+    getOperationalSystems: '/machine/operational-systems',
   };

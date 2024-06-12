@@ -31,3 +31,7 @@ def wakeonlan_machine():
 @app.route('/machine/shutdown', methods=["POST"])
 def shutdown_machine():
     return MachineManager().shutdown(request.json['id'])
+
+@app.route("/machine/operational-systems", methods=["GET"])
+def get_operational_systems():
+    return MachineManager().get_operational_systems()

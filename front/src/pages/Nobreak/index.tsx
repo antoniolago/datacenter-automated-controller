@@ -9,6 +9,8 @@ import { AppSettingsService } from '@/core/services/appsettings';
 import { NobreakService } from '@/core/services/nobreak';
 import { Box, Button, Grid, Modal, ModalClose, ModalDialog, Typography } from '@mui/joy';
 import GaugeComponent from '@/components/GaugeComponent';
+import { NobreakForm } from '../Forms/Nobreak';
+import DeleteNobreakModal from '@/components/DeleteNobreakModal';
 
 export const NobreakPage = () => {
 	const { id } = useParams();
@@ -28,8 +30,11 @@ export const NobreakPage = () => {
 			</Modal>
 			<Box sx={{ display: 'flex' }}>
 				<PageTitle title={`Nobreak - ${nobreak?.name}`} />
+
+				<NobreakForm nobreak={nobreak} edit />
+				<DeleteNobreakModal nobreak={nobreak} />
 				<Button
-					sx={{marginLeft: 'auto', width: '150px', height: '60px'}}
+					sx={{ marginLeft: 'auto', width: '150px', height: '60px' }}
 					variant={"outlined"}
 					onClick={() => setOpenConsole(true)}>
 					Upsdrvctl Output
@@ -42,7 +47,7 @@ export const NobreakPage = () => {
 							Battery Charge
 						</h2>
 						<BatteryGauge
-							orientation="vertical"
+							orientation="horizontal"
 							value={nobreak?.batteryCharge ?? 0}
 							animated
 							customization={{

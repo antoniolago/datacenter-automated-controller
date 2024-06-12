@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
+import MaskedTextField from 'react-masked-mui-textfield';
 import Grid from '@mui/material/Grid';
 import { TextField, createTheme, FormHelperText, MenuItem, FormLabel } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -21,6 +22,7 @@ import { IMachine } from "@/core/types/machine";
 import { DialogActions, ModalClose, ModalDialog, Typography, Modal } from "@mui/joy";
 import { AxiosError, AxiosResponse } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import { OperationalSystemInput } from "@/components/OperationalSystemInput";
 
 export const MachineForm = (props: any) => {
     const { api } = useApi();
@@ -44,7 +46,8 @@ export const MachineForm = (props: any) => {
         mac: props.machine?.mac || '',
         ruleId: props.machine?.inheritRule ? "inherit" : props.machine?.ruleId,
         credentialId: props.machine?.credentialId || 0,
-        inheritRule: props.machine?.inheritRule || false
+        inheritRule: props.machine?.inheritRule || false,
+        operationalSystemId: props.machine?.operationalSystemId || 1
     }
     const {
         control,
@@ -99,10 +102,8 @@ export const MachineForm = (props: any) => {
 
     useEffect(() => {
         //@ts-ignore
-        if(watch("ruleId") == 'inherit')
-            setValue("inheritRule", true);
-        else
-            setValue("inheritRule", false);
+        var isInheritRule = watch("ruleId") == 'inherit'
+        setValue("inheritRule", isInheritRule);
     }, [watch("ruleId")]);
     return (
         loading ?
@@ -169,7 +170,7 @@ export const MachineForm = (props: any) => {
                                                 label="Description" />
                                             <FormHelperText error={true}>{errors?.description?.message}</FormHelperText>
                                         </Grid>
-                                        <Grid item md={6} sm={12}>
+                                        <Grid item md={4} sm={12}>
                                             <TextField
                                                 {...register("host")}
                                                 error={errors?.host?.message != undefined && errors?.host?.message != ""}
@@ -179,15 +180,22 @@ export const MachineForm = (props: any) => {
                                                 label="Host" />
                                             <FormHelperText error={true}>{errors?.host?.message}</FormHelperText>
                                         </Grid>
-                                        <Grid item md={6} sm={12}>
+                                        <Grid item md={4} sm={12}>
                                             <TextField
+                                                // InputProps={{
+                                                //     inputComponent: ForwardedInputMask,
+                                                // }}
                                                 {...register("mac")}
+                                                // mask="AA:AA:AA:AA:AA:AA"
                                                 error={errors?.mac?.message != undefined && errors?.mac?.message != ""}
                                                 style={{ width: "100%" }}
                                                 required
                                                 variant="outlined"
                                                 label="MAC" />
                                             <FormHelperText error={true}>{errors?.mac?.message}</FormHelperText>
+                                        </Grid>
+                                        <Grid item md={4} sm={12}>
+                                            <OperationalSystemInput form={form} />
                                         </Grid>
                                     </Grid>
                                 </Grid>

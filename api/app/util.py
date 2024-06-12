@@ -7,6 +7,11 @@ import json
 import sys
 import socket
 from ping3 import ping, verbose_ping
+
+OperationalSystemEnum = {
+    'Linux': 1,
+    'Windows': 2
+}
 def model_to_dict(obj: Any) -> dict:
     # Convert SQLAlchemy object to dictionary.
     if isinstance(obj, list):

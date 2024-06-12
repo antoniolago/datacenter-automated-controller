@@ -61,16 +61,8 @@ export const NobreakCard = (props: any) => {
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
-                    <NobreakForm nobreak={props.nobreak} edit />
-                    <DeleteNobreakModal
-                        nobreak={props.nobreak}
-                        deleteResponseAlert={deleteResponseAlert}
-                    />
-                    {/* <Button size="small" color="error">
-                        Delete
-                    </Button> */}
-                </CardActions>
+                {/* <CardActions>
+                </CardActions> */}
             </Card>
         </>
     );

@@ -89,9 +89,22 @@ const usePostShutdownMachine = (id: string) => {
   const context = useMutation<any>(queryOptions);
   return { ...context, data: context?.data?.data };
 }
+const useGetOperationalSystems = () => {
+  const { api } = useApi();
+  var queryOptions: UseQueryOptions<AxiosResponse<any>, Error, AxiosResponse<any>, any> = {
+    queryKey: ["operational-systems"],
+    queryFn: () => api.get(apiRoutes.getOperationalSystems),
+    retry: false,
+    staleTime: Infinity,
+    enabled: true
+  };
+  const context = useQuery(queryOptions)
+  return { ...context, data: context?.data?.data };
+};
 export const MachineService = {
   useGetMachines,
   useGetMachineById,
   usePostWolMachine,
-  usePostShutdownMachine
+  usePostShutdownMachine,
+  useGetOperationalSystems
 }

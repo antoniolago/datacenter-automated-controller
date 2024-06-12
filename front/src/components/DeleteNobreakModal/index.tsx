@@ -7,7 +7,7 @@ import { NobreakService } from '@/core/services/nobreak';
 import { INobreak } from '@/core/types/nobreak';
 export interface DeleteNobreakModalProps {
     nobreak: INobreak;
-    deleteResponseAlert: any;
+    deleteResponseAlert?: any;
 }
 
 const DeleteNobreakModal = (props: DeleteNobreakModalProps) => {

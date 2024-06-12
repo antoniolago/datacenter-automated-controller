@@ -57,10 +57,10 @@ export const NobreakForm = (props: any) => {
         clearErrors
     } = useForm<INobreak>({
         defaultValues: {
-            name: props.edit ? props.nobreak.name : "NobreakName",
-            description: props.edit ? props.nobreak.description : "Datacenter Nobreak",
-            driver: props.edit ? props.nobreak.driver : "dummy-ups",
-            port: props.edit ? props.nobreak.port : "auto",
+            name: props.edit ? props.nobreak?.name : "NobreakName",
+            description: props.edit ? props.nobreak?.description : "Datacenter Nobreak",
+            driver: props.edit ? props.nobreak?.driver : "dummy-ups",
+            port: props.edit ? props.nobreak?.port : "auto",
             arguments: []
         },
         resolver: yupResolver(validationSchema as any)
@@ -83,12 +83,12 @@ export const NobreakForm = (props: any) => {
     });
     useEffect(() => {
         reset({
-            name: props.edit ? props.nobreak.name : "NobreakName",
-            description: props.edit ? props.nobreak.description : "Datacenter Nobreak",
-            driver: props.edit ? props.nobreak.driver : "dummy-ups",
-            port: props.edit ? props.nobreak.port : "auto",
-            arguments: props.edit ? props.nobreak.arguments : [],
-            ruleId: props.edit ? props.nobreak.ruleId : ""
+            name: props.edit ? props.nobreak?.name : "NobreakName",
+            description: props.edit ? props.nobreak?.description : "Datacenter Nobreak",
+            driver: props.edit ? props.nobreak?.driver : "dummy-ups",
+            port: props.edit ? props.nobreak?.port : "auto",
+            arguments: props.edit ? props.nobreak?.arguments : [],
+            ruleId: props.edit ? props.nobreak?.ruleId : ""
         })
     }, [props.nobreak]);
 
@@ -114,7 +114,7 @@ export const NobreakForm = (props: any) => {
             });
     };
     //@ts-ignore
-    const upsConfValue = () => (`[${watchForm.name ?? ''}]\n    desc="${watchForm.description ?? ''}"\n    driver="${watchForm.driver ?? ''}"\n    port="${watchForm.port ?? ''}"\n    ${fields.map((field, index) => ('' + watchForm.arguments[index].key + ((watchForm.arguments[index].key || watchForm.arguments[index].value) ? '=' : '') + watchForm.arguments[index].value + '\n    '))}`).replaceAll(",", "")
+    const upsConfValue = () => (`[${watchForm?.name ?? ''}]\n    desc="${watchForm?.description ?? ''}"\n    driver="${watchForm?.driver ?? ''}"\n    port="${watchForm?.port ?? ''}"\n    ${fields?.map((field, index) => ('' + watchForm.arguments[index].key + ((watchForm.arguments[index].key || watchForm.arguments[index].value) ? '=' : '') + watchForm.arguments[index].value + '\n    '))}`).replaceAll(",", "")
     const watchForm = watch();
 
     return (

@@ -12,3 +12,8 @@ export interface IMachine {
     credentialId: number;
     inheritRule: boolean;
 }
+
+export interface IOperationalSystem {
+    id: number;
+    name: string;
+}

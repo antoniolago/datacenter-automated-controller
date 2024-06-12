@@ -16,7 +16,7 @@ export const RuleInput = (props: any) => {
     const watchForm = props.form.watch("ruleId");
     const getCurrentRule = () => {
         if (watchForm == "inherit") {
-            return nobreak?.rule; //TODO, MAKE NOBREAK RETURN RULE FROM API
+            return nobreak?.rule;
         } else {
             return getRuleById();
         }
@@ -61,7 +61,7 @@ export const RuleInput = (props: any) => {
                             </MenuItem>
                         ))}
                     </TextField>
-                    <FormHelperText error={true}>{props.errors?.mac?.message}</FormHelperText>
+                    <FormHelperText error={true}>{props.errors?.rules?.message}</FormHelperText>
                 </Grid>
                 <Grid md={2} sx={{ display: 'flex' }}>
                     <RuleForm add/>

@@ -27,7 +27,12 @@ class MachineManager(BaseManager):
             m["isOnline"] = is_machine_online(m["host"])
         return machines
     
-    def returns_extra_vars(self, machine, privateKeyPath):
+    def get_operational_systems(self):
+        # Transforming the dictionary into a list of dictionaries
+        operationalSystemEnumToList = [{"id": value, "name": key} for key, value in OperationalSystemEnum.items()]
+        return operationalSystemEnumToList
+    
+    def returns_extra_vars(self, machine, privateKeyPath = None):
         print(machine, file=sys.stderr)
         extra_vars = {'ansible_user': machine.credential.user if machine.credential.user else 'root'}
         # if machine.credential.password:
@@ -35,27 +40,52 @@ class MachineManager(BaseManager):
         extra_vars['ansible_os_family'] = 'Windows'
         # extra_vars['ansible_port'] = machine.credential.sshPort if machine.credential.sshPort else 22
         # extra_vars['ansible_ssh_private_key_file'] = privateKeyPath
-        # if machine.operationalSystemId == 2:
-        extra_vars['ansible_connection'] = 'winrm'
-        extra_vars['ansible_winrm_server_cert_validation'] = 'ignore'
-        extra_vars['ansible_winrm_transport'] = 'basic'
+        #Create operational systems enum:
+        # 1 = Linux
+        # 2 = Windows
+        #
+        if machine.operationalSystemId == OperationalSystemEnum["Linux"]:
+            extra_vars['ansible_connection'] = 'ssh'
+            if privateKeyPath:
+                extra_vars['ansible_ssh_private_key_file'] = privateKeyPath
+            extra_vars['ansible_ssh_common_args'] = f'-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o IdentityFile={privateKeyPath}'
+        if machine.operationalSystemId == OperationalSystemEnum["Windows"]:
+            extra_vars['ansible_connection'] = 'winrm'
+            extra_vars['ansible_winrm_server_cert_validation'] = 'ignore'
+            extra_vars['ansible_winrm_transport'] = 'basic'
         # extra_vars['ansible_winrm_scheme'] = 'http'
-        
         return extra_vars
-
+    
+    def setup_ssh(self, machine):
+        inventory_data = f"""[all]\n{machine.host}"""
+        r = run(
+            # private_data_dir='/api/data',
+            inventory=inventory_data,
+            extravars=self.returns_extra_vars(machine),
+            playbook='/api/app/managers/setup_ssh.yaml',
+            suppress_env_files=True
+        )
+        if r.status == 'successful':
+            return jsonify({"message": "SSH keys successfully set up"}), 200
+        else:
+            return jsonify({"message": "Failed to set up SSH keys"}), 500
+    
+    def setup_host_inventory(self, host):
+        loader = DataLoader()
+        inventory = InventoryManager(loader=loader)
+        inventory.add_host(host)
+        return inventory, loader
+        
+    
     def shutdown(self, id):
         machine = self.get(id, "id")
-        loader = DataLoader()
-        inventory_data = f"""[all]\n{machine.host}"""
-        inventory = InventoryManager(loader=loader)
-        inventory.add_host(machine.host)
+        self.setup_ssh(machine)
+        inventory, loader = self.setup_host_inventory(machine.host)
         path = '/ssh/'+machine.name
-        # publicKey     Path = path+'/id_rsa.pub'
         privateKeyPath = path+'/id_rsa'
-        # os.remove(publicKeyPath)
-        # os.remove(privateKeyPath)
+        inventory_data = f"""[all]\n{machine.host}"""
         # Create a VariableManager and set the parameters for the current host
-        variable_manager = VariableManager(loader=loader, inventory=inventory)
+        # variable_manager = VariableManager(loader=loader, inventory=inventory)
         # variable_manager.extra_vars = self.returns_auth_vars(machine, path)
         #Create machine name folder if it doesn't exis
         if not os.path.exists(path):
@@ -97,4 +127,6 @@ class MachineManager(BaseManager):
 
     def wake_on_lan(self, id):
         machine = self.get(id, "id")
-        send_magic_packet(machine["mac"])
+        send_magic_packet(machine.mac, ip_address=machine.host)
+        return create_response(True, None, "Magic packet sent successfully")
+        

@@ -151,8 +151,7 @@ export const CredentialForm = (props: any) => {
                                 label="Credential's user" />
                             <FormHelperText error={true}>{errors?.user?.message?.toString()}</FormHelperText>
                         </Grid>
-
-                        {/* <Grid item md={12} sm={12} className="my-2" sx={{display: 'hidden'}}>
+                        <Grid item md={12} sm={12} className="my-2" sx={{display: 'hidden'}}>
                             <h4 className="bold mb-2">Password<span className="red">*</span></h4>
                             <TextField
                                 {...register("password")}
@@ -163,7 +162,7 @@ export const CredentialForm = (props: any) => {
                                 maxRows={999}
                                 variant="outlined"
                                 label="Credential's password" />
-                        </Grid> */}
+                        </Grid>
                         <Grid item md={6} sm={6} className="my-2">
                             <h4 className="bold mb-2">Public Key<span className="red">*</span></h4>
                             <TextField

@@ -12,7 +12,7 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import React, { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { MachineForm } from '@/pages/Forms/Machine';
-import { Grid, Modal, ModalClose, ModalDialog } from '@mui/joy';
+import { Box, Grid, Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { useApi } from '@/core/services/api';
 import { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
@@ -42,7 +42,7 @@ export const MachineCard = (props: any) => {
                 }
                 setLoadingDelete(false);
                 setShowModalDelete(false);
-                queryClient.invalidateQueries({queryKey: ['machines']})
+                queryClient.invalidateQueries({ queryKey: ['machines'] })
             })
             .catch((error: AxiosResponse) => {
                 toast.error("Failed to delete machine");
@@ -95,11 +95,20 @@ export const MachineCard = (props: any) => {
                 <ModalDialog size="md">
                     <ModalClose />
                     <form>
-                        <Typography
-                            style={{ fontSize: "17px", textAlign: "center", marginRight: '40px' }}
-                        >
-                            {props?.machine?.name}
-                        </Typography>
+                        <Box sx={{ display: 'flex' }}>
+                            <Typography
+                                style={{ fontSize: "42px", textAlign: "center", marginRight: '40px' }}
+                            >
+                                {props?.machine?.name}
+                            </Typography>
+                            <MachineForm machine={props?.machine} edit />
+                            <IconButton
+                                aria-label="delete machine"
+                                color="error"
+                                onClick={() => setShowModalDelete(true)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Box>
                         <br />
                         <Grid container spacing={2}>
                             <Grid md={6}>
@@ -114,7 +123,7 @@ export const MachineCard = (props: any) => {
                             </Grid>
                             <Grid md={6}>
                                 <LoadingButton
-                                    onClick={() => wolMachine()} 
+                                    onClick={() => wolMachine()}
                                     color="success"
                                     loading={loadingWol}
                                     loadingIndicator={<Loading />}
@@ -129,18 +138,18 @@ export const MachineCard = (props: any) => {
                     </form>
                 </ModalDialog>
             </Modal>
-            <Card sx={{border: '1px solid', borderColor: props?.machine?.isOnline ? 'green' : 'red'}}>
+            <Card sx={{ border: '1px solid', borderColor: props?.machine?.isOnline ? 'green' : 'red' }}>
                 <CardActionArea onClick={() => setShowModal(true)}>
                     <CardContent>
                         <Typography gutterBottom variant="h5" component="div">
-                            {props?.machine.name}
+                            {props?.machine?.name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            {props?.machine.description}
+                            {props?.machine?.description}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                <CardActions>
+                {/* <CardActions>
                     <MachineForm machine={props?.machine} edit />
                     <IconButton
                         aria-label="delete machine"
@@ -148,7 +157,7 @@ export const MachineCard = (props: any) => {
                         onClick={() => setShowModalDelete(true)}>
                         <DeleteIcon />
                     </IconButton>
-                </CardActions>
+                </CardActions> */}
             </Card>
         </>
     );

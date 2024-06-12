@@ -5,6 +5,7 @@ services:
     hostname: dac-api
     build: ./api
     privileged: true
+    network_mode: host
     ports:
       - "5000:5000"
     volumes:
