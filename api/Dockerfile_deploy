@@ -9,6 +9,11 @@ RUN pip install --upgrade pip
 COPY ./api/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
 COPY ./api /api
+
+RUN flask db init
+RUN flask db migrate -m "test message"
+RUN flask db upgrade
+
 COPY ./shared /shared
 #Gotta install Adafruit_DHT manually inside the prod container since the builder is not a PI environment
 ENTRYPOINT ["sh", "-c", "pip install Adafruit_DHT && python /api/main.py"]

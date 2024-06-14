@@ -42,10 +42,17 @@ export const NobreakPage = () => {
 			</Box>
 			<Grid container spacing={2}>
 				<Grid md={4}>
-					<Paper className="p-4">
-						<h2>
+					<Paper 
+						className="p-4" 
+						sx={{
+							textAlign: 'center', 
+							height: '100%', 
+							alignContent: 'center'
+						}}
+						>
+						{/* <h2>
 							Battery Charge
-						</h2>
+						</h2> */}
 						<BatteryGauge
 							orientation="horizontal"
 							value={nobreak?.batteryCharge ?? 0}
@@ -89,7 +96,10 @@ export const NobreakPage = () => {
 					</Paper>
 				</Grid>
 				<Grid md={8}>
-					<Paper className="p-4" sx={{ height: '100%' }}>
+					<Paper
+						// className="p-4" 
+						sx={{ height: '100%' }}
+					>
 						<Grid container>
 							<Grid md={4}>
 								<GaugeComponent

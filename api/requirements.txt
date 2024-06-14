@@ -15,6 +15,7 @@ Flask-SocketIO==5.3.0
 Flask-SQLAlchemy==3.0.2
 Flask-SSE==1.0.0
 greenlet==2.0.1
+requests==2.31.0
 h11==0.14.0
 importlib-metadata==6.0.0
 importlib-resources==5.10.2

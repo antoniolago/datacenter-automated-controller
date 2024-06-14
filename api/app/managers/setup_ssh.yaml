@@ -3,6 +3,28 @@
   hosts: all
   gather_facts: no
   tasks:
+
+    - name: Install WinRM service on Windows
+      win_feature:
+        name: WinRM
+        state: present
+      when: ansible_os_family == 'Windows'
+
+    - name: Configure WinRM service on Windows
+      win_command: |
+        winrm quickconfig -q;
+        winrm set winrm/config/service/auth '@{Basic="true"}';
+        winrm set winrm/config/service '@{AllowUnencrypted="true"}';
+        winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="1024"}';
+      when: ansible_os_family == 'Windows'
+
+    - name: Ensure WinRM service is running on Windows
+      win_service:
+        name: winrm
+        start_mode: auto
+        state: started
+      when: ansible_os_family == 'Windows'
+
     - name: Ensure Python is installed on Linux
       raw: |
         if command -v python3 > /dev/null 2>&1; then

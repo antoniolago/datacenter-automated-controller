@@ -5,7 +5,8 @@ services:
     hostname: dac-api
     build: ./api
     privileged: true
-    network_mode: host
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "5000:5000"
     volumes:
@@ -16,6 +17,7 @@ services:
       - datacenter-automated-controller
     depends_on:
       - redis
+      - wol-listener
   # frontend:
   #   build: ./front
   #   environment:
@@ -69,6 +71,16 @@ services:
       - "./rule-applier/:/app"
     networks:
       - datacenter-automated-controller
+  wol-listener:
+    build: ./wol-listener
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    network_mode: host
+    volumes:
+      - "./wol-listener:/app"
+    environment:
+      PORT: 18888
 networks: 
   datacenter-automated-controller:
     driver: bridge

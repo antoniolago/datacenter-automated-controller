@@ -1,9 +1,11 @@
 from os import path
+import subprocess
 from app.managers.base_manager import BaseManager 
 from app.models.machines import Machines
 from app import db
 import os
 from app.util import *
+import requests
 from ansible_runner import run
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
@@ -125,8 +127,23 @@ class MachineManager(BaseManager):
         return result
 
 
+    # def wake_on_lan(self, id):
+    #     machine = self.get(id, "id")
+    #     shellCommand = f"echo {machine.mac} | nc host.docker.internal 18888"
+    #     #exec shellCommand
+    #     os.system(shellCommand)
+    #     return create_response(True, None, "Magic packet sent successfully")
     def wake_on_lan(self, id):
         machine = self.get(id, "id")
-        send_magic_packet(machine.mac, ip_address=machine.host)
-        return create_response(True, None, "Magic packet sent successfully")
+        mac_address = machine.mac
+        try:
+            with socket.socket() as s:
+                s.connect(("host.docker.internal", 18889))
+                s.sendall(mac_address.encode('utf-8'))
+                response = s.recv(1024).decode('utf-8')
+                print(f"Received response: {response}", file=sys.stderr)
+        except Exception as e:
+            print(f"Failed to send WoL packet: {e}", file=sys.stderr)
+            return create_response(False, None, f"Failed to send WoL packet: {e}")
         
+        return create_response(True, None, "Magic packet sent successfully")
