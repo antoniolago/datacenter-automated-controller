@@ -2,7 +2,7 @@ version: "3.2"
 services:
   api:
     env_file: .deploy.env
-    image: ghcr.io/antoniolago/datacenter-automated-controller-api:v0.0.01
+    image: ghcr.io/antoniolago/datacenter-automated-controller-api:v0.0.06
     privileged: true
     ports:
       - "5000:5000"
@@ -14,14 +14,14 @@ services:
     depends_on:
       - redis
   frontend:
-    image: ghcr.io/antoniolago/datacenter-automated-controller-front:v0.0.01
+    image: ghcr.io/antoniolago/datacenter-automated-controller-front:v0.0.06
     ports:
       - 8090:80
     depends_on:
       - api
   nut:
     env_file: .deploy.env
-    image: ghcr.io/antoniolago/datacenter-automated-controller-nut:v0.0.01
+    image: ghcr.io/antoniolago/datacenter-automated-controller-nut:v0.0.06
     ports:
       - "3493:3493"
     volumes:
@@ -35,7 +35,7 @@ services:
       - api
   nut-launcher:
     env_file: .deploy.env
-    image: ghcr.io/antoniolago/datacenter-automated-controller-nut-launcher:v0.0.01
+    image: ghcr.io/antoniolago/datacenter-automated-controller-nut-launcher:v0.0.06
     depends_on:
       - api
       - nut
@@ -52,7 +52,7 @@ services:
       - datacenter-automated-controller
       
   rule-applier:
-    image: ghcr.io/antoniolago/datacenter-automated-controller-rule-applier:v0.0.33
+    image: ghcr.io/antoniolago/datacenter-automated-controller-rule-applier:v0.0.06
     volumes:
       - "/opt/datacenter-automated-controller/rule-applier/:/app"
     networks:
