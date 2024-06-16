@@ -234,7 +234,7 @@ const Layout = (props: any) => {
                     <DrawerHeader>
                         <Typography variant="h6" noWrap sx={{ flex: 'auto' }}>
                             <Typography sx={{ cursor: "pointer" }} onClick={() => navigate('/home')}>
-                                Espaço do Professor
+                                Datacenter Automated Controller
                                 {appSettings?.ENVIRONMENT != "main" &&
                                     <BadgeAmbiente component="span">
                                         {appSettings?.ENVIRONMENT}

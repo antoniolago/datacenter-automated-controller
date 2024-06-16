@@ -136,14 +136,7 @@ class MachineManager(BaseManager):
     def wake_on_lan(self, id):
         machine = self.get(id, "id")
         mac_address = machine.mac
-        try:
-            with socket.socket() as s:
-                s.connect(("host.docker.internal", 18889))
-                s.sendall(mac_address.encode('utf-8'))
-                response = s.recv(1024).decode('utf-8')
-                print(f"Received response: {response}", file=sys.stderr)
-        except Exception as e:
-            print(f"Failed to send WoL packet: {e}", file=sys.stderr)
-            return create_response(False, None, f"Failed to send WoL packet: {e}")
-        
+        ip_base = '.'.join(machine.host.split('.')[:-1])
+        broadcast_ip = f"{ip_base}.255"
+        send_magic_packet(mac_address, port=9, ip_address=broadcast_ip)
         return create_response(True, None, "Magic packet sent successfully")

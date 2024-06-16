@@ -18,6 +18,8 @@ import { NobreakService } from "@/core/services/nobreak";
 import { RuleService } from "@/core/services/rules";
 import { useApi } from "@/core/services/api";
 import { IRule } from "@/core/types/rule";
+import { Box, Grid } from "@mui/joy";
+import SquareFootIcon from '@mui/icons-material/SquareFoot';
 
 export const RuleCard = (props: { rule: IRule | undefined }) => {
     const { id } = useParams();
@@ -106,12 +108,21 @@ export const RuleCard = (props: { rule: IRule | undefined }) => {
             <Card>
                 <CardActionArea onClick={() => console.log(`/nobreak/`)}>
                     <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                            {rule?.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            {rule?.description}
-                        </Typography>
+                        <Grid container spacing={1}>
+                            <Grid md={10}>
+                                <Box>
+                                    <Typography gutterBottom variant="h5" component="div">
+                                        {rule?.name}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {rule?.description}
+                                    </Typography>
+                                </Box>
+                            </Grid>
+                            <Grid md={2}>
+                                <SquareFootIcon color="info" sx={{ width: '100%', height: '100%' }} />
+                            </Grid>
+                        </Grid>
                     </CardContent>
                 </CardActionArea>
                 <CardActions>

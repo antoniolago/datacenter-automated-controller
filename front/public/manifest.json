@@ -1,6 +1,6 @@
 {
 	"short_name": "PSM",
-	"name": "Power Supply Manager",
+	"name": "Datacenter Automated Controller",
 	"lang": "en-US",
 	"start_url": ".",
 	"display": "standalone"

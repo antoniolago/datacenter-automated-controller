@@ -33,7 +33,7 @@ class Launcher:
             # Define the command to launch the Python process
             command = ['python', '/nut-launcher/launchers/start_upsdrvctl.py', str(nobreak['id']), nobreak['name']]
             # Check if the process is already running
-            if self.is_process_already_running('python', command):
+            if self.is_process_already_running('python', command, nobreak['name']):
                 print('Process is already running: '+str(command), flush=True)
                 break
             else:
@@ -41,7 +41,16 @@ class Launcher:
                 print('Process started: '+str(command), flush=True)
             time.sleep(10)
             
-    def is_process_already_running(self, name, command):
+    def is_process_already_running(self, name, command, nobreakName=""):
+        if nobreakName != "":
+            # Check if any process with -a {nobreak_name} is running
+            check_command = ['ssh', 'root@nut', 'pgrep', '-f', f'-a {nobreakName}']
+            check_process = subprocess.run(check_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # If the process is running, do not start it again
+            if check_process.returncode == 0:
+                # print(f"The process for nobreak {nobreakName} is already running.", flush=True)
+                return True
+
         ps_output = subprocess.check_output(['ps', '-eo', 'pid,args']).decode('utf-8')
         for line in ps_output.splitlines()[1:]:
             fields = line.strip().split(None, 1)

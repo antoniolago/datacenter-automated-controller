@@ -9,6 +9,8 @@ services:
       - "host.docker.internal:host-gateway"
     ports:
       - "5000:5000"
+      - "7:7/udp"
+      - "9:9/udp"
     volumes:
       - "./api:/api"
       - "./shared:/shared"
@@ -51,7 +53,7 @@ services:
       - nut
     build: ./nut-launcher
     volumes:
-      - ./nut-launcher:/app
+      - ./nut-launcher:/nut-launcher
       - "./shared:/shared"
     networks:
       - datacenter-automated-controller
@@ -71,16 +73,6 @@ services:
       - "./rule-applier/:/app"
     networks:
       - datacenter-automated-controller
-  wol-listener:
-    build: ./wol-listener
-    restart: always
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    network_mode: host
-    volumes:
-      - "./wol-listener:/app"
-    environment:
-      PORT: 18888
 networks: 
   datacenter-automated-controller:
     driver: bridge

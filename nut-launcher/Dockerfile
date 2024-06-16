@@ -1,5 +1,5 @@
 FROM python:3.7.16-alpine3.16
-WORKDIR /app
+WORKDIR /nut-launcher
 ENV PYTHONPATH=/shared:$PYTHONPATH
 
 RUN apk update && apk add nut openssh

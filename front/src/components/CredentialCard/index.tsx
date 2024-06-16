@@ -15,6 +15,9 @@ import { Modal } from '../Modal';
 import { CredentialForm } from '@/pages/Forms/Credential';
 import { useApi } from "@/core/services/api";
 import { ICredential } from "@/core/types/credential";
+import { Box, Grid } from "@mui/joy";
+import KeyIcon from '@mui/icons-material/Key';
+
 export const CredentialCard = (props: any) => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState(false);
@@ -77,16 +80,25 @@ export const CredentialCard = (props: any) => {
                 {deleteResponseAlert}
             </Modal>
             {credential &&
-                <Card sx={{ maxWidth: 345 }}>
+                <Card >
                     <CardActionArea onClick={() => console.log(`/nobreak/`)}>
                         <CardContent>
-                            <Typography gutterBottom variant="h5" component="div">
-                                {credential.name}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                User: {credential.user}<br />
-                                {/* Password {credential.password} */}
-                            </Typography>
+                            <Grid container spacing={1}>
+                                <Grid md={10}>
+                                    <Box>
+                                        <Typography gutterBottom variant="h5" component="div">
+                                            {credential.name}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            User: {credential.user}<br />
+                                            {/* Password {credential.password} */}
+                                        </Typography>
+                                    </Box>
+                                </Grid>
+                                <Grid md={2}>
+                                    <KeyIcon color="warning" sx={{width: '100%', height: '100%'}}/>
+                                </Grid>
+                            </Grid>
                         </CardContent>
                     </CardActionArea>
                     <CardActions>

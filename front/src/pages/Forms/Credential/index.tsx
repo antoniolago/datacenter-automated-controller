@@ -121,7 +121,6 @@ export const CredentialForm = (props: any) => {
                 >
                     <Grid container spacing={2}>
                         <Grid item md={6} sm={12} className="my-2">
-                            <h4 className="bold mb-2">Name <span className="red">*</span></h4>
                             {props.credential?.id &&
                                 <div hidden>
                                     <TextField
@@ -142,7 +141,6 @@ export const CredentialForm = (props: any) => {
                             <FormHelperText error={true}>{errors?.name?.message?.toString()}</FormHelperText>
                         </Grid>
                         <Grid item md={6} sm={12} className="my-2">
-                            <h4 className="bold mb-2">User <span className="red">*</span></h4>
                             <TextField
                                 {...register("user")}
                                 error={errors?.user?.message != undefined}
@@ -151,8 +149,7 @@ export const CredentialForm = (props: any) => {
                                 label="Credential's user" />
                             <FormHelperText error={true}>{errors?.user?.message?.toString()}</FormHelperText>
                         </Grid>
-                        <Grid item md={12} sm={12} className="my-2" sx={{display: 'hidden'}}>
-                            <h4 className="bold mb-2">Password<span className="red">*</span></h4>
+                        <Grid item md={12} sm={12} className="my-2" sx={{ display: 'hidden' }}>
                             <TextField
                                 {...register("password")}
                                 error={errors?.password?.message != undefined}
@@ -163,7 +160,14 @@ export const CredentialForm = (props: any) => {
                                 variant="outlined"
                                 label="Credential's password" />
                         </Grid>
-                        <Grid item md={6} sm={6} className="my-2">
+
+                    </Grid>
+                </Modal >
+            </>
+    )
+};
+
+{/* <Grid item md={6} sm={6} className="my-2">
                             <h4 className="bold mb-2">Public Key<span className="red">*</span></h4>
                             <TextField
                                 {...register("publicKey")}
@@ -188,9 +192,4 @@ export const CredentialForm = (props: any) => {
                                 variant="outlined"
                                 label="Credential's privateKey" />
                             <FormHelperText error={true}>{errors?.privateKey?.message?.toString()}</FormHelperText>
-                        </Grid>
-                    </Grid>
-                </Modal >
-            </>
-    )
-};
+                        </Grid> */}

@@ -50,8 +50,9 @@ export const useGetNobreakById = (nobreakId: any) => {
   var queryOptions: UseQueryOptions<AxiosResponse<INobreak>, Error, AxiosResponse<INobreak>, any> = {
     queryKey: ["nobreak-" + nobreakId],
     queryFn: () => api.get(`${apiRoutes.getNobreakById}/${nobreakId}`),
-    retry: false,
-    staleTime: Infinity,
+    retry: true,
+    // staleTime: 2000,
+    refetchInterval: 10000, //10s
     enabled: true
   };
   const context = useQuery(queryOptions)

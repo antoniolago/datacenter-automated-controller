@@ -140,7 +140,7 @@ export const TopMenu = () => {
             component="div"
             sx={{ display: { xs: 'none', sm: 'block' } }}
           >
-            Power Supply Manager
+            Datacenter Automated Controller
           </Typography>
           {/* <Search>
             <SearchIconWrapper>

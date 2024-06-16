@@ -18,6 +18,7 @@ import { useApi } from "@/core/services/api";
 import { IRule } from "@/core/types/rule";
 import Loading from "@/components/Loading";
 import { useQueryClient } from "@tanstack/react-query";
+import { Checkbox } from "@mui/joy";
 
 export const RuleForm = (props: any) => {
     const { api } = useApi();
@@ -38,11 +39,11 @@ export const RuleForm = (props: any) => {
         maxTemperature: props.rule?.maxTemperature || 0,
         minHumidity: props.rule?.minHumidity || 0,
         maxHumidity: props.rule?.maxHumidity || 0,
-        forceOnline: props.rule?.forceOnline || 0,
+        forceOnline: props.rule?.forceOnline || false,
         wolAttempts: props.rule?.wolAttempts || 0,
         chargeToShutdown: props.rule?.chargeToShutdown || 0,
         chargeToWol: props.rule?.chargeToWol || 0,
-        ruleId: props.rule?.ruleId || 0
+        id: props.rule?.id || 0
     }
     const {
         control,
@@ -75,7 +76,7 @@ export const RuleForm = (props: any) => {
                     setAlert(<Alert severity="error"><AlertTitle>{res.data.message}</AlertTitle>{res.data.error}</Alert>);
                 }
                 setLoadingSubmit(false);
-                queryClient.refetchQueries({queryKey: ["rules"]})
+                queryClient.refetchQueries({ queryKey: ["rules"] })
             })
             .catch((error: any) => {
                 console.log(error)
@@ -94,7 +95,7 @@ export const RuleForm = (props: any) => {
                         aria-label="add"
                         color="success"
                         onClick={() => setShow(true)}
-                        sx={{placeSelf: 'center'}}>
+                        sx={{ placeSelf: 'center' }}>
                         <AddIcon />
                     </IconButton>
                 }
@@ -137,7 +138,7 @@ export const RuleForm = (props: any) => {
                                         fullWidth
                                         variant="outlined"
                                         value={props.rule?.id}
-                                        label="Rule's id" />
+                                        label="id" />
                                 </div>
                             }
                             <TextField
@@ -146,7 +147,7 @@ export const RuleForm = (props: any) => {
                                 fullWidth
                                 variant="outlined"
                                 inputProps={{ pattern: "[a-z]{1,15}" }}
-                                label="Rule's name" />
+                                label="Name" />
                             <FormHelperText error={true}>{errors?.name?.message}</FormHelperText>
                         </Grid>
                         <Grid item md={6} sm={12} className="my-2">
@@ -155,105 +156,100 @@ export const RuleForm = (props: any) => {
                                 error={errors?.description?.message != undefined}
                                 fullWidth
                                 variant="outlined"
-                                label="Rule's description" />
+                                label="Description" />
                             <FormHelperText error={true}>{errors?.description?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
-                            <TextField
-                                {...register("forceOnline")}
-                                error={errors?.forceOnline?.message != undefined}
-                                fullWidth
-                                variant="outlined"
-                                label="Keep machine online" />
-                            <FormHelperText error={true}>{errors?.forceOnline?.message}</FormHelperText>
-                        </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={3} sm={12} className="my-2">
                             <TextField
                                 {...register("minTemperature")}
                                 error={errors?.minTemperature?.message != undefined}
                                 fullWidth
                                 variant="outlined"
                                 InputProps={{
-                                  endAdornment: <InputAdornment position="end">Cº</InputAdornment>,
+                                    endAdornment: <InputAdornment position="end">Cº</InputAdornment>,
                                 }}
-                                label="Rule's minTemperature"
+                                label="Min. Temperature"
                                 type="number" />
                             <FormHelperText error={true}>{errors?.minTemperature?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={3} sm={12} className="my-2">
                             <TextField
                                 {...register("maxTemperature")}
                                 error={errors?.maxTemperature?.message != undefined}
                                 fullWidth
                                 variant="outlined"
                                 InputProps={{
-                                  endAdornment: <InputAdornment position="end">Cº</InputAdornment>,
+                                    endAdornment: <InputAdornment position="end">Cº</InputAdornment>,
                                 }}
-                                label="Rule's maxTemperature"
+                                label="Max. Temperature"
                                 type="number" />
                             <FormHelperText error={true}>{errors?.maxTemperature?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={3} sm={12} className="my-2">
                             <TextField
                                 {...register("minHumidity")}
                                 error={errors?.minHumidity?.message != undefined}
                                 fullWidth
                                 InputProps={{
-                                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
                                 }}
                                 variant="outlined"
-                                label="Rule's minHumidity"
+                                label="Min. Humidity"
                                 type="number" />
                             <FormHelperText error={true}>{errors?.minHumidity?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={3} sm={12} className="my-2">
                             <TextField
                                 {...register("maxHumidity")}
                                 error={errors?.maxHumidity?.message != undefined}
                                 fullWidth
                                 variant="outlined"
                                 InputProps={{
-                                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
                                 }}
-                                label="Rule's maxHumidity"
+                                label="Max. Humidity"
                                 type="number" />
                             <FormHelperText error={true}>{errors?.maxHumidity?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("wolAttempts")}
                                 error={errors?.wolAttempts?.message != undefined}
                                 fullWidth
                                 variant="outlined"
-                                label="Rule's wolAttempts"
+                                label="Wake-On-Lan Attempts"
                                 type="number" />
                             <FormHelperText error={true}>{errors?.wolAttempts?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("chargeToWol")}
                                 error={errors?.chargeToWol?.message != undefined}
                                 fullWidth
                                 variant="outlined"
                                 InputProps={{
-                                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
                                 }}
-                                label="Rule's chargeToWol"
+                                label="Charge to Wake-On-Lan"
                                 type="number" />
                             <FormHelperText error={true}>{errors?.chargeToWol?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("chargeToShutdown")}
                                 error={errors?.chargeToShutdown?.message != undefined}
                                 fullWidth
                                 variant="outlined"
                                 InputProps={{
-                                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                                    endAdornment: <InputAdornment position="end">%</InputAdornment>,
                                 }}
-                                label="Rule's chargeToShutdown"
+                                label="Charge to Shutdown"
                                 type="number" />
                             <FormHelperText error={true}>{errors?.chargeToShutdown?.message}</FormHelperText>
+                        </Grid>
+                        <Grid item md={6} sm={12} className="my-2">
+
+                            <Checkbox label="Keep machine online" checked={watch("forceOnline")} {...register("forceOnline")}/>
                         </Grid>
                     </Grid>
                 </Modal >

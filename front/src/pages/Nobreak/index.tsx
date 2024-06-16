@@ -101,7 +101,7 @@ export const NobreakPage = () => {
 						sx={{ height: '100%' }}
 					>
 						<Grid container>
-							<Grid md={4}>
+							<Grid md={3}>
 								<GaugeComponent
 									value={nobreak?.inputVoltage ?? 0}
 									minValue={0}
@@ -135,7 +135,7 @@ export const NobreakPage = () => {
 									}}
 								/>
 							</Grid>
-							<Grid md={4}>
+							<Grid md={3}>
 								<GaugeComponent
 									value={nobreak?.outputVoltage ?? 0}
 									minValue={0}
@@ -169,7 +169,7 @@ export const NobreakPage = () => {
 									}}
 								/>
 							</Grid>
-							<Grid md={4}>
+							<Grid md={3}>
 								{/* <Typography>Input Voltage</Typography> */}
 								<GaugeComponent
 									value={nobreak?.load ?? 0}

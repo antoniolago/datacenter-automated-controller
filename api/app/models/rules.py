@@ -8,7 +8,7 @@ class Rules(db.Model):
     maxTemperature = db.Column(db.Float, index=False, unique=True)
     minHumidity = db.Column(db.Float, index=False, unique=True)
     maxHumidity = db.Column(db.Float, index=False, unique=False)
-    forceOnline = db.Column(db.Integer, index=False, unique=False)
+    forceOnline = db.Column(db.Boolean, index=False, unique=False)
     wolAttempts = db.Column(db.Integer, index=False, unique=False)
     chargeToShutdown = db.Column(db.Float, index=False, unique=False)
     chargeToWol = db.Column(db.Float, index=False, unique=False)

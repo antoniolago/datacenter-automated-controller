@@ -38,16 +38,19 @@ class Nut:
         redis.close()
     
     def start_ups_driver(self, nobreak_id, nobreak_name):
-        command = ['ssh', '-o', 'ServerAliveInterval=20', '-t', 'root@nut', 'upsdrvctl', '-D', 'start', nobreak_name]
+        # Start the driver if the process is not running
+        start_command = ['ssh', '-t', 'root@nut', 'upsdrvctl', '-d', 'start', nobreak_name]
         redis = RedisHelper()
         nobreak_redis_key = self.appSettings.REDIS_UPSDRVCTL_STREAM_KEY.replace('{0}', str(nobreak_id))
-        # Read the output of the process in real-time insert it into Redis and trigger socketio event
-        with subprocess.Popen(command, stdout=subprocess.PIPE) as p:
+
+        # Read the output of the process in real-time, insert it into Redis, and trigger socketio event
+        with subprocess.Popen(start_command, stdout=subprocess.PIPE) as p:
             for line in iter(p.stdout.readline, b''):
                 lineStr = self.return_timestamp_string() + line.decode('utf-8').strip() + '\n'
                 redis.append_stream(nobreak_redis_key, lineStr)
                 self.socketio.emit('updateNobreakEvents')
                 self.socketio.emit(self.appSettings.SOCKET_IO_UPSDRVCTL_EVENT.replace('{0}', str(nobreak_id)), lineStr)
+        
         p.stdout.close()
         p.wait()
         redis.append_stream(nobreak_redis_key, '\n')

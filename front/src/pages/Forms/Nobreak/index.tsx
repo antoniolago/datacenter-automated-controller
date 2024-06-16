@@ -294,13 +294,20 @@ export const NobreakForm = (props: any) => {
                                             {alert}
                                         </Grid>
                                     }
-                                    <Grid item>
-                                        <Button onClick={() => setShowModal(false)}>Close</Button>
+                                    <Grid md={12} item sx={{ textAlign: 'center' }}>
+                                        <Button
+                                            variant="outlined"
+                                            color="error"
+                                            sx={{ mr: 3 }}
+                                            onClick={() => setShowModal(false)}>
+                                            Close
+                                        </Button>
                                         <LoadingButton
                                             // size="small"
+                                            color="success"
                                             type="submit"
                                             loading={loadingSubmit}
-                                            variant="outlined"
+                                            variant="contained"
                                         >
                                             <span>Submit</span>
                                         </LoadingButton>

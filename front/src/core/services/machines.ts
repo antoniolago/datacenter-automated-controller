@@ -13,7 +13,7 @@ export const useGetMachines = () => {
     queryKey: ["machines"],
     queryFn: () => api.get(apiRoutes.getMachines),
     retry: false,
-    staleTime: Infinity,
+    staleTime: 2000,
     enabled: true
   };
   const context = useQuery(queryOptions)
@@ -30,7 +30,7 @@ export const useGetNobreakMachines = (idNobreak: string) => {
     queryKey: ["machines-"+idNobreak],
     queryFn: () => api.get(apiRoutes.getMachines+"/"+idNobreak), //TODO: change this to getMachinesByNobreakId
     retry: false,
-    staleTime: Infinity,
+    staleTime: 2000,
     enabled: true
   };
   const context = useQuery(queryOptions)

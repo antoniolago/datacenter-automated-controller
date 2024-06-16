@@ -25,7 +25,7 @@ services:
     ports:
       - "3493:3493"
     volumes:
-      - "/opt/datacenter-automated-controller/nut/ups.conf:/etc/nut/ups.conf"
+      - "/opt/datacenter-automated-controller/nut:/etc/nut"
       - "/opt/datacenter-automated-controller/shared:/shared"
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0" #YOUR UPS's USB PORT
