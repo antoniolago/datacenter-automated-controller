@@ -33,17 +33,15 @@ jobs:
             context: ./rule-applier
             platform: linux/arm64
     permissions:
-      contents: read
+      contents: write
       packages: write
     steps:
       - name: Generate build ID
         id: prep
-        # version=${github.event.label.name}
-        # ref will be branch on branch push and tag on tagpush
         run: |
-            ref=${GITHUB_REF##*/}
-            TAG=${{ github.event.release.tag_name }}
-            echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+          ref=${GITHUB_REF##*/}
+          TAG=${{ github.event.release.tag_name }}
+          echo "VERSION=${TAG#v}" >> $GITHUB_ENV
       - name: set env
         run: echo "NOW=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
       - name: Checkout repository
@@ -76,5 +74,4 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=${{ matrix.image }}:cache
-          cache-to: type=registry,ref=${{ matrix.image }}:cache,mode=max
+          cache-from: type=registry,ref
