@@ -7,8 +7,8 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - "/opt/datacenter-automated-controller/nut/ups.conf:/nut/ups.conf"
-      - "/opt/datacenter-automated-controller/api/app/datacenter-automated-controller.db:/api/app/datacenter-automated-controller.db"
+      - "/opt/datacenter-automated-controller/nut:/nut"
+      - "/opt/datacenter-automated-controller/api/app/db:/api/app/db/"
     networks:
       - datacenter-automated-controller
     depends_on:
