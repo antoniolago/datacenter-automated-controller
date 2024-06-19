@@ -84,7 +84,7 @@ jobs:
 
       - name: Update docker-compose.yml
         run: |
-          sed -i "s|\${IMAGE_TAG}|${{ env.VERSION }}|g" docker-compose.yml
+          sed -i "s|\${IMAGE_TAG}|${{ env.VERSION }}|g" docker-compose-deploy.yml
         shell: bash
 
       - name: Commit changes
