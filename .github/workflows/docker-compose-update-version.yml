@@ -23,17 +23,17 @@ jobs:
         run: |
           git checkout -B deploy-rpi-sinprors
 
-      - name: Update docker-compose.yml
+      - name: Update docker-compose-deploy.yml
         run: |
-          sed -i "s|\${IMAGE_TAG}|${{ env.VERSION }}|g" docker-compose.yml
+          sed -i "s|\${IMAGE_TAG}|${{ env.VERSION }}|g" docker-compose-deploy.yml
         shell: bash
 
       - name: Commit changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add docker-compose.yml
-          git commit -m "Update docker-compose.yml with new image tag"
+          git add docker-compose-deploy.yml
+          git commit -m "Update docker-compose-deploy.yml with new image tag"
           git push origin deploy-rpi-sinprors --force
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
