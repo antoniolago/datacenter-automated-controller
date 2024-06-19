@@ -1,7 +1,8 @@
-name: Deploy to raspberry pi
+name: Deploy to Raspberry Pi
+
 on:
   workflow_run:
-    workflows: ["Build & publish Docker images"]
+    workflows: ["Update Docker Compose"]
     types:
       - completed
 
@@ -9,13 +10,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: alex-ac/github-action-ssh-docker-compose@master
-      name: Docker-Compose Remote Deployment
-      with:
-        ssh_host: intranet.sinprors.org.br
-        ssh_port: 2002
-        ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-        ssh_user: ${{ secrets.SSH_USER }}
-        docker_compose_prefix: datacenter-automated-controller
-        docker_compose_filename: docker-compose-deploy.yml
+      - uses: actions/checkout@v2
+        with:
+          ref: deploy-rpi-sinprors
+
+      - uses: alex-ac/github-action-ssh-docker-compose@master
+        name: Docker-Compose Remote Deployment
+        with:
+          ssh_host: intranet.sinprors.org.br
+          ssh_port: 2002
+          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh_user: ${{ secrets.SSH_USER }}
+          docker_compose_prefix: datacenter-automated-controller
+          docker_compose_filename: docker-compose-deploy.yml
