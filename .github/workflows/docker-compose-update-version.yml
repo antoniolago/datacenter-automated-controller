@@ -10,7 +10,7 @@ jobs:
   update-docker-compose:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Ensure the token has write permissions
+      contents: write 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
