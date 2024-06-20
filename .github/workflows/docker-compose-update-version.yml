@@ -15,11 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+     
       - name: Set environment variables
         run: |
-          ref=${GITHUB_REF##*/}
-          TAG=${{ github.event.workflow_run.conclusion }}
-          echo "VERSION=${TAG#v}" >> $GITHUB_ENV
+          echo "VERSION=${{ github.event.workflow_run.head_commit.message }}" >> $GITHUB_ENV
+
 
       - name: Checkout or create deploy branch
         run: |

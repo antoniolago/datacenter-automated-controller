@@ -77,3 +77,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ matrix.image }}:cache
           cache-to: type=registry,ref=${{ matrix.image }}:cache,mode=max
+      - name: Set tag as output
+        run: echo "::set-output name=tag::${GITHUB_REF##*/}"
+        id: tag
