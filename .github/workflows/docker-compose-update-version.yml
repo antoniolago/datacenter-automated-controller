@@ -10,15 +10,15 @@ jobs:
   update-docker-compose:
     runs-on: ubuntu-latest
     permissions:
-      contents: write 
+      contents: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Set environment variables
         run: |
-          ref=${GITHUB_REF##*/}
-          TAG=${{ github.event.workflow_run.conclusion }}
+          TAG=${{ github.event.workflow_run.head_branch }}
           echo "VERSION=${TAG#v}" >> $GITHUB_ENV
 
       - name: Checkout or create deploy branch
@@ -27,7 +27,7 @@ jobs:
 
       - name: Update docker-compose-deploy.yml
         run: |
-          sed -i "s|\${IMAGE_TAG}|${{ env.VERSION }}|g" docker-compose-deploy.yml
+          sed -i "s|success|${{ env.VERSION }}|g" docker-compose-deploy.yml
         shell: bash
 
       - name: Commit changes
