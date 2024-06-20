@@ -36,11 +36,9 @@ jobs:
             image: ghcr.io/antoniolago/datacenter-automated-controller-rule-applier
             context: ./rule-applier
             platform: linux/arm64
-
     permissions:
       contents: write
       packages: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -67,7 +65,6 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ matrix.image }}:${{ github.ref_name }}
 
-
   update-docker-compose:
     runs-on: ubuntu-latest
     permissions:
@@ -83,7 +80,7 @@ jobs:
 
       - name: Update docker-compose-deploy.yml
         run: |
-          sed -i "s|\${VERSION}|${{ env.VERSION }}|g" docker-compose-deploy.yml
+          sed -i "s|\${VERSION}|${{ github.ref_name }}|g" docker-compose-deploy.yml
         shell: bash
 
       - name: Commit changes
