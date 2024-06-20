@@ -7,6 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  VERSION: ${{ github.event.release.tag_name }}
 
 jobs:
   build-and-push-image:
@@ -66,14 +67,6 @@ jobs:
           push: true
           tags: ${{ env.REGISTRY }}/${{ matrix.image }}:${{ github.ref_name }}
 
-      - name: Save tag as artifact
-        run: echo "VERSION=${{ github.ref_name }}" > version.txt
-
-      - name: Upload tag artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: docker-image-tag
-          path: version.txt
 
   update-docker-compose:
     runs-on: ubuntu-latest
@@ -81,18 +74,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Download tag artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: docker-image-tag
-
-      - name: Read tag from artifact
-        id: read-tag
-        run: |
-          VERSION=$(cat version.txt)
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-
       - name: Checkout or create deploy branch
         run: |
           git checkout -B deploy-rpi-sinprors
