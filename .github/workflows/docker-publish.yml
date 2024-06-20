@@ -64,6 +64,8 @@ jobs:
           platforms: ${{ matrix.platform }}
           push: true
           tags: ${{ env.REGISTRY }}/${{ matrix.image }}:${{ github.ref_name }}
+          cache-from: type=registry,ref=${{ matrix.image }}:cache
+          cache-to: type=registry,ref=${{ matrix.image }}:cache,mode=max
 
   update-docker-compose:
     runs-on: ubuntu-latest
