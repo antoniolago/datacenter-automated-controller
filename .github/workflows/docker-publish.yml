@@ -82,7 +82,7 @@ jobs:
 
       - name: Update docker-compose-deploy.yml
         run: |
-          sed -i "s|\${VERSION}|${{ github.ref_name }}|g" docker-compose-deploy.yml
+          sed -i "s|\${IMAGE_TAG}|${{ github.ref_name }}|g" docker-compose-deploy.yml
         shell: bash
 
       - name: Commit changes
