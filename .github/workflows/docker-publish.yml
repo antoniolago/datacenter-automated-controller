@@ -5,6 +5,7 @@ on:
       - v*
 env:
   REGISTRY: ghcr.io
+  VERSION: ${{ github.event.release.tag_name }}
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -40,7 +41,7 @@ jobs:
         id: prep
         run: |
           ref=${GITHUB_REF##*/}
-          TAG=${{ github.event.release.tag_name }}
+          TAG=${{ env.VERSION }}
           echo "VERSION=${TAG#v}" >> $GITHUB_ENV
       - name: set env
         run: echo "NOW=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
@@ -76,3 +77,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ matrix.image }}:cache
           cache-to: type=registry,ref=${{ matrix.image }}:cache,mode=max
+      - name: Set tag as output
+        run: echo "::set-output name=tag::${GITHUB_REF##*/}"
+        id: tag

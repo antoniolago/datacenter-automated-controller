@@ -1,0 +1,41 @@
+name: Update Docker Compose
+
+on:
+  workflow_run:
+    workflows: ["Build & publish Docker images"]
+    types:
+      - completed
+
+jobs:
+  update-docker-compose:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+     
+      - name: Set environment variables
+        run: |
+          echo "VERSION=${{ github.event.workflow_run.head_commit.message }}" >> $GITHUB_ENV
+
+
+      - name: Checkout or create deploy branch
+        run: |
+          git checkout -B deploy-rpi-sinprors
+
+      - name: Update docker-compose-deploy.yml
+        run: |
+          sed -i "s|\${VERSION}|${{ env.VERSION }}|g" docker-compose-deploy.yml
+        shell: bash
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docker-compose-deploy.yml
+          git commit -m "Update docker-compose-deploy.yml with new image tag"
+          git push origin deploy-rpi-sinprors --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
