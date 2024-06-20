@@ -70,6 +70,9 @@ jobs:
 
   update-docker-compose:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     needs: build-and-push-image
     steps:
       - name: Checkout repository
