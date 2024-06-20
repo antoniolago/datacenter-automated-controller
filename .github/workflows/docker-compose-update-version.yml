@@ -16,9 +16,9 @@ jobs:
         uses: actions/checkout@v2
 
      
-      - name: Set environment variables
-        run: |
-          echo "VERSION=${{ github.event.workflow_run.head_commit.message }}" >> $GITHUB_ENV
+      # - name: Set environment variables
+      #   run: |
+      #     echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
 
 
       - name: Checkout or create deploy branch
