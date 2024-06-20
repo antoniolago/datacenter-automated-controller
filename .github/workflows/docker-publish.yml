@@ -77,6 +77,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=${{ matrix.image }}:cache
           cache-to: type=registry,ref=${{ matrix.image }}:cache,mode=max
-      - name: Set tag as output
-        run: echo "::set-output name=tag::${GITHUB_REF##*/}"
-        id: tag
+
+
+      - name: Save tag as artifact
+        run: echo "${GITHUB_REF##*/}" > tag.txt
+      - name: Upload tag artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-image-tag
+          path: tag.txt

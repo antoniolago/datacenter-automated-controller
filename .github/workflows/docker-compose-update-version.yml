@@ -12,6 +12,17 @@ jobs:
     permissions:
       contents: write 
     steps:
+      - name: Download tag artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: docker-image-tag
+
+      - name: Read tag from artifact
+        id: read-tag
+        run: |
+          TAG=$(cat tag.txt)
+          echo "VERSION=$TAG" >> $GITHUB_ENV
+
       - name: Checkout repository
         uses: actions/checkout@v2
 
