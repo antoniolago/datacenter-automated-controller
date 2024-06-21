@@ -7,7 +7,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - "/opt/datacenter-automated-controller/nut:/nut"
+      - "/opt/datacenter-automated-controller/nut/:/nut/"
       - "/opt/datacenter-automated-controller/api/app/db:/api/app/db/"
     networks:
       - datacenter-automated-controller
@@ -25,7 +25,7 @@ services:
     ports:
       - "3493:3493"
     volumes:
-      - "/opt/datacenter-automated-controller/nut:/etc/nut"
+      - "/opt/datacenter-automated-controller/nut/:/etc/nut/"
       - "/opt/datacenter-automated-controller/shared:/shared"
     devices:
       - "/dev/ttyUSB0:/dev/ttyUSB0" #YOUR UPS's USB PORT
@@ -34,6 +34,7 @@ services:
     depends_on:
       - api
   nut-launcher:
+    restart: on-failure
     env_file: .deploy.env
     image: ghcr.io/antoniolago/datacenter-automated-controller-nut-launcher:${IMAGE_TAG}
     depends_on:
