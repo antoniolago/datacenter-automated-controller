@@ -14,7 +14,7 @@ services:
     volumes:
       - "./api:/api"
       - "./shared:/shared"
-      - "./nut/ups.conf:/nut/ups.conf"
+      - "./nut:/nut"
     networks:
       - datacenter-automated-controller
     depends_on:

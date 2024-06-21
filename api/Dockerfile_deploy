@@ -9,6 +9,7 @@ RUN pip install --upgrade pip
 COPY ./api/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
 COPY ./api /api
+COPY ./nut /nut
 
 # RUN flask db init
 # RUN flask db migrate -m "test message"
