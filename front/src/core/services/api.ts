@@ -20,9 +20,9 @@ export const useApi = () => {
     if(pathname.includes("localhost")){
       url = CONFIG.API_URL
     } else if(pathname.includes("-stg")){
-      url = "https://oci-api-stg.sinprors.org.br";
+      url = "https://placeholder";
     } else {
-      url = "http://snp0:5000"
+      url = "http://snp0:5000/api"
     }
     return url;
   }
