@@ -65,7 +65,7 @@ class NobreakManager(BaseManager):
         obj['arguments'] = self.argument_manager.map_obj_list(obj['arguments'])
         self.update(obj, filterValue, filterKey)
         db.session.commit()
-        self.update_nobreak_in_ups_conf(self.mapped_obj)
+        self.update_nobreak_in_ups_conf(self.mapped_obj, oldName=filterValue)
         return "Nobreak updated successfully."
         
     def delete_nobreak(self, id):
@@ -86,21 +86,21 @@ class NobreakManager(BaseManager):
                 f.write(f"\t{argument.key} = \"{argument.value}\"\n")
             f.write(f"#{nobreak.name}#E\n")
     
-    def delete_nobreak_from_ups_conf(self, nobreak):
+    def delete_nobreak_from_ups_conf(self, name):
         with open(self.appsettings.UPS_CONF_PATH, "r") as f:
             lines = f.readlines()
         with open(self.appsettings.UPS_CONF_PATH, "w") as f:
             remove_lines = False
             for line in lines:
                 # Start and End mark for string matching
-                if f"#{nobreak.name}#S" in line:
+                if f"#{name}#S" in line:
                     remove_lines = True
-                elif f"#{nobreak.name}#E" in line:
+                elif f"#{name}#E" in line:
                     remove_lines = False
                 elif not remove_lines:
                     f.write(line)
     
-    def update_nobreak_in_ups_conf(self, nobreak):
-        self.delete_nobreak_from_ups_conf(nobreak)
+    def update_nobreak_in_ups_conf(self, nobreak, oldName):
+        self.delete_nobreak_from_ups_conf(oldName)
         self.add_nobreak_to_ups_conf(nobreak)
     
