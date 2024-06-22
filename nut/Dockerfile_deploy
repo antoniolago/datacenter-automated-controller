@@ -17,4 +17,4 @@ RUN mkdir -p /root/.ssh \
     && chown nut /var/run/nut
 COPY ./nut/* /etc/nut-copy/
 COPY ./nut/* /etc/nut/
-ENTRYPOINT ["sh", "-c", "rc-status; rc-service sshd start; service sshd restart; cp /etc/nut-copy /etc/nut; tail -f /dev/null;"]
+ENTRYPOINT ["sh", "-c", "rc-status; rc-service sshd start; service sshd restart; chmod 777 /dev/ttyUSB0; tail -f /dev/null;"]
