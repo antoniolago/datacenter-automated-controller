@@ -19,7 +19,6 @@ services:
       - datacenter-automated-controller
     depends_on:
       - redis
-      - wol-listener
   # frontend:
   #   build: ./front
   #   environment:

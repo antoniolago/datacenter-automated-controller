@@ -4,6 +4,7 @@ import { IRule } from "./rule";
 
 export interface INobreak {
     id: number;
+    upsc_output: any;
     name: string;
     driver: string;
     description: string;

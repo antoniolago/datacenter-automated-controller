@@ -23,6 +23,7 @@ class NobreakManager(BaseManager):
             nobreak.__dict__['outputVoltage'] = upscResponse['output.voltage']
             nobreak.__dict__['inputVoltage'] = upscResponse['input.voltage']
             nobreak.__dict__['load'] = upscResponse['ups.load']
+            nobreak.__dict__['upsc_output'] = upscResponse
         except:
             return nobreak
         return nobreak

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from "react-router";
 import { PageTitle } from '@/components/PageTitle';
 import Paper from '@mui/material/Paper';
@@ -42,14 +42,14 @@ export const NobreakPage = () => {
 			</Box>
 			<Grid container spacing={2}>
 				<Grid md={4}>
-					<Paper 
-						className="p-4" 
+					<Paper
+						className="p-4"
 						sx={{
-							textAlign: 'center', 
-							height: '100%', 
+							textAlign: 'center',
+							height: '100%',
 							alignContent: 'center'
 						}}
-						>
+					>
 						{/* <h2>
 							Battery Charge
 						</h2> */}
@@ -93,6 +93,9 @@ export const NobreakPage = () => {
 								},
 							}}
 						/>
+						<Typography sx={{mt:2}}>
+							Status: {nobreak?.upsc_output["ups.status"]}
+						</Typography>
 					</Paper>
 				</Grid>
 				<Grid md={8}>
@@ -101,7 +104,7 @@ export const NobreakPage = () => {
 						sx={{ height: '100%' }}
 					>
 						<Grid container>
-							<Grid md={3}>
+							<Grid md={4}>
 								<GaugeComponent
 									value={nobreak?.inputVoltage ?? 0}
 									minValue={0}
@@ -135,7 +138,7 @@ export const NobreakPage = () => {
 									}}
 								/>
 							</Grid>
-							<Grid md={3}>
+							<Grid md={4}>
 								<GaugeComponent
 									value={nobreak?.outputVoltage ?? 0}
 									minValue={0}
@@ -169,7 +172,7 @@ export const NobreakPage = () => {
 									}}
 								/>
 							</Grid>
-							<Grid md={3}>
+							<Grid md={4}>
 								{/* <Typography>Input Voltage</Typography> */}
 								<GaugeComponent
 									value={nobreak?.load ?? 0}
@@ -179,9 +182,9 @@ export const NobreakPage = () => {
 										{
 											subArcs:
 												[
-													{ color: 'red', limit: 15, showTick: true },
+													{ color: 'green', limit: 15, showTick: true },
 													{ color: 'yellow', limit: 70, showTick: true },
-													{ color: 'green', showTick: true },
+													{ color: 'red', showTick: true },
 												]
 										}
 									}
