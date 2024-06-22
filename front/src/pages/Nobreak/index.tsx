@@ -94,7 +94,7 @@ export const NobreakPage = () => {
 							}}
 						/>
 						<Typography sx={{mt:2}}>
-							Status: {nobreak?.upsc_output["ups.status"]}
+							{nobreak?.upsc_output?.["ups.status"]}
 						</Typography>
 					</Paper>
 				</Grid>
