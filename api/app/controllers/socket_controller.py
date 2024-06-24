@@ -4,8 +4,8 @@ from shared.appsettings import AppSettings
 from app.managers.nobreak_manager import NobreakManager
 
 @socketio.on('upsdOutputNewLine')
-def handle_upsdOutputNewLine():
-    print("test1")
+def handle_upsdOutputNewLine(json):
+    print("test1:"+json, flush=True)
     
 @socketio.on('updateNobreakEvents')
 def handle_changedNobreaks():
@@ -13,8 +13,8 @@ def handle_changedNobreaks():
         print(nobreak)
         socketio.on_event(AppSettings().SOCKET_IO_UPSDRVCTL_EVENT.replace('{0}', str(nobreak['id'])), handle_upsdrvctl_event)
 
-def handle_upsdrvctl_event():
-    print("test1")
+def handle_upsdrvctl_event(json):
+    print("test2:"+json, flush=True)
 
 with app.app_context():
     handle_changedNobreaks()

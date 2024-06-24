@@ -1,3 +1,7 @@
+import pathlib
+import sys
+_parentdir = pathlib.Path(__file__).parent.parent.parent.resolve()
+sys.path.insert(0, str(_parentdir))
 from shared.appsettings import AppSettings
 from datetime import datetime
 import redis

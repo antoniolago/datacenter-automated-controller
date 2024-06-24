@@ -25,6 +25,7 @@ import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { AppBar, BadgeAmbiente, DrawerHeader, closedMixin, openedMixin } from './styles';
 import { Badge, ClickAwayListener, Collapse } from '@mui/material';
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
 import { useLocation, useNavigate } from 'react-router';
 import SeletorTema from '@/components/ThemeSelector';
 import { TemaContext } from '@/contexts/Tema';
@@ -32,14 +33,16 @@ import { matchPath } from 'react-router';
 import SubdirectoryArrowRightIcon from '@mui/icons-material/SubdirectoryArrowRight';
 import ContentContainer from '../ContentContainer';
 import { AppSettingsService, useGetAppSettings } from '@/core/services/appsettings';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import { TemaService } from '@/core/services/tema';
-import { Chip, Tooltip } from '@mui/joy';
+import { Card, CardContent, Chip, Tooltip } from '@mui/joy';
 import { SensorService } from '@/core/services/sensor';
+import RuleApplierOutputModal from '../RuleApplierOutputModal';
 
 const Layout = (props: any) => {
     const { isDarkTheme, setIsDarkTheme } = useContext(TemaContext);
     // const { data: usuario } = UsuarioService.useGetUserInfo();
-    const {data: sensorData} = SensorService.useGetData();
+    const { data: sensorData } = SensorService.useGetData();
     const { isMobile } = TemaService.useGetIsMobile();
 
     const Drawer = styled(MuiDrawer, {
@@ -215,14 +218,32 @@ const Layout = (props: any) => {
                         {/* </div> */}
                         {/* </Typography> */}
                         {/* <ContentProfile /> */}
-                        <div>
-                            <Typography>
-                                Temperatura: {sensorData?.temperature}
-                            </Typography>
-                            <Typography>
-                                Umidade: {sensorData?.humidity}
-                            </Typography>
-                        </div>
+                        
+                        <RuleApplierOutputModal />
+                        <Card color="success" sx={{ textAlign: 'right', display: 'flex', paddingY: '5px' }}>
+                            <CardContent sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <Box sx={{ height: '100%' }}>
+                                    <DeviceThermostatIcon />
+                                    
+                                </Box>
+                                <Box sx={{ mr: 3 }}>
+                                    <Typography>
+                                        Temperatura:
+                                    </Typography>
+                                    <Typography>
+                                        Umidade:
+                                    </Typography>
+                                </Box>
+                                <Box>
+                                    <Typography>
+                                        {sensorData?.temperature} ºC
+                                    </Typography>
+                                    <Typography>
+                                        {sensorData?.humidity} %
+                                    </Typography>
+                                </Box>
+                            </CardContent>
+                        </Card>
                     </Toolbar>
                 </AppBar>
                 <Drawer

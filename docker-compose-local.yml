@@ -46,6 +46,7 @@ services:
     depends_on:
       - api
   nut-launcher:
+    restart: always
     env_file: .env
     depends_on:
       - api
@@ -70,6 +71,7 @@ services:
     build: ./rule-applier
     volumes:
       - "./rule-applier/:/app"
+      - "./shared/:/shared"
     networks:
       - datacenter-automated-controller
 networks: 

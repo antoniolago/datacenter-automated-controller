@@ -195,77 +195,9 @@ export const NobreakPage = () => {
 									}}
 								/>
 							</Grid>
-							{/* <Grid md={4}>
-								<GaugeComponent
-									value={270}
-									type="radial"
-									arc={
-										{subArcs: 
-											[
-												{color: 'green', limit: 30},
-												{color: 'yellow', limit: 70},
-												{color: 'red', limit: 250, showTick: true},
-												{color: 'red', limit: 270}
-											]
-									}
-									}	
-									labels={{
-										tickLabels: {
-											defaultTickValueConfig: {
-												formatTextValue(value) {
-													return `${value}V`;
-												},
-											}
-										},
-										valueLabel: {
-											formatTextValue(value) {
-												return `${value}V`;
-											}
-										}
-									}}
-									minValue={0}
-									maxValue={300}
-								/>
-							</Grid>
-							<Grid md={4}>
-								<GaugeComponent
-									value={270}
-									type="semicircle"
-									arc={
-										{subArcs: 
-											[
-												{color: 'green', limit: 30},
-												{color: 'yellow', limit: 70},
-												{color: 'red', limit: 270}
-											]
-									}
-									}	
-									labels={{
-										tickLabels: {
-											defaultTickValueConfig: {
-												formatTextValue(value) {
-													return `${value}V`;
-												},
-											}
-										},
-										valueLabel: {
-											formatTextValue(value) {
-												return `${value}V`;
-											}
-										}
-									}}
-									minValue={0}
-									maxValue={300}
-								/>
-							</Grid> */}
 						</Grid>
 					</Paper>
 				</Grid>
-				{/* <Grid md={4}>
-					<Paper className="p-4" sx={{height: '100%'}}>
-						<h2>Temperature</h2>
-					</Paper>
-				</Grid> */}
 			</Grid><br />
 			<Grid container spacing={2}>
 				<Grid md={12}>
