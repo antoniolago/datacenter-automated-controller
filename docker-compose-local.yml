@@ -34,6 +34,7 @@ services:
   #   stdin_open: true
   #   command: npm start
   nut:
+    privileged: true
     env_file: .env
     build: ./nut
     ports:

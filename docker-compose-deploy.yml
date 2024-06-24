@@ -22,6 +22,7 @@ services:
   nut:
     env_file: .deploy.env
     image: ghcr.io/antoniolago/datacenter-automated-controller-nut:${IMAGE_TAG}
+    privileged: true
     ports:
       - "3493:3493"
     volumes:
