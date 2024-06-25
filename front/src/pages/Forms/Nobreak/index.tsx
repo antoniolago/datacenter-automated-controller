@@ -40,7 +40,7 @@ export const NobreakForm = (props: any) => {
             .of(
                 Yup.object().shape({
                     key: Yup.string().required(),
-                    value: Yup.string().required(),
+                    value: Yup.string() //.required(), Not always a value is required (novendor, norating, etc.)
                 })
             )
     });
