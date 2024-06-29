@@ -1,8 +1,7 @@
 from flask_socketio import SocketIO
-from api.app.managers.rule_applier_manager import RuleApplierManager
 from app import socketio, app
+from app.managers.rule_applier_manager import RuleApplierManager
 from shared.appsettings import AppSettings
-from app.managers.nobreak_manager import NobreakManager
 
 @socketio.on('updateRuleApplierEvents')
 def handle_changeInRuleApplierEvents():

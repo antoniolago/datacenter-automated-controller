@@ -114,7 +114,7 @@ export const NobreakForm = (props: any) => {
             });
     };
     //@ts-ignore
-    const upsConfValue = () => (`[${watchForm?.name ?? ''}]\n    desc="${watchForm?.description ?? ''}"\n    driver="${watchForm?.driver ?? ''}"\n    port="${watchForm?.port ?? ''}"\n    ${fields?.map((field, index) => ('' + watchForm.arguments[index].key + ((watchForm.arguments[index].key || watchForm.arguments[index].value) ? '=' : '') + watchForm.arguments[index].value + '\n    '))}`).replaceAll(",", "")
+    const upsConfValue = () => (`[${watchForm?.name ?? ''}]\n    desc="${watchForm?.description ?? ''}"\n    driver="${watchForm?.driver ?? ''}"\n    port="${watchForm?.port ?? ''}"\n    ${fields?.map((field, index) => ('' + watchForm.arguments[index].key + ((watchForm.arguments[index].value) ? '=' : '') + watchForm.arguments[index].value + '\n    '))}`).replaceAll(",", "")
     const watchForm = watch();
 
     return (
@@ -147,7 +147,6 @@ export const NobreakForm = (props: any) => {
                             <Grid container spacing={2}>
                                 <Grid item md={8}>
                                     <Grid container spacing={2}>
-
                                         <Grid item md={6} sm={12}>
                                             {/* <h4 className="bold mb-2">Name <span className="red">*</span></h4> */}
                                             <TextField

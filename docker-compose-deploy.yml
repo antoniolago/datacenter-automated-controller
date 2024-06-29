@@ -29,7 +29,7 @@ services:
       - "/opt/datacenter-automated-controller/nut/:/etc/nut/"
       - "/opt/datacenter-automated-controller/shared:/shared"
     devices:
-      - "/dev/ttyUSB0:/dev/ttyUSB0" #YOUR UPS's USB PORT
+      - "/dev:/dev" #YOUR UPS's USB PORT
     networks:
       - datacenter-automated-controller
     depends_on:

@@ -1,9 +1,11 @@
+import os
 import pathlib
 import sys
-_parentdir = pathlib.Path(__file__).parent.parent.parent.resolve()
-sys.path.insert(0, str(_parentdir))
+dir_path = os.path.dirname(os.path.realpath(__file__))
+parent_dir_path = os.path.abspath(os.path.join(dir_path, os.pardir))
+sys.path.insert(0, parent_dir_path)
 from shared.api import Api
-from main import logger
+from logger import logger
 # Set up logging
 class Machine:
     def __init__(self, machine):

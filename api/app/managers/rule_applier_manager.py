@@ -1,6 +1,7 @@
 from app.managers.base_manager import BaseManager
 from shared.appsettings import AppSettings
 from shared.redishelper import RedisHelper
+
 from app.util import *
 
 class RuleApplierManager(BaseManager):

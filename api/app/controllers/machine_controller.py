@@ -32,6 +32,6 @@ def wakeonlan_machine():
 def shutdown_machine():
     return MachineManager().shutdown(request.json['id'])
 
-@app.route("/machine/operational-systems", methods=["GET"])
+@app.route("/api/machine/operational-systems", methods=["GET"])
 def get_operational_systems():
     return MachineManager().get_operational_systems()

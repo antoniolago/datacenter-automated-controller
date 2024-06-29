@@ -5,6 +5,7 @@ from app.controllers import rule_controller
 from app.controllers import appsettings_controller
 from app.controllers import socket_controller
 from app.controllers import credential_controller
+from app.controllers import rule_applier_controller
 import sys
 from app import app
 from flask import Flask, jsonify

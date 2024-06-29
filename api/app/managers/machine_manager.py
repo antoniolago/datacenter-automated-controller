@@ -5,11 +5,12 @@ from app.models.machines import Machines
 from app import db
 import os
 from app.util import *
-import requests
-from ansible_runner import run
-from ansible.inventory.manager import InventoryManager
-from ansible.parsing.dataloader import DataLoader
-from ansible.vars.manager import VariableManager
+isWindows = os.name == 'nt'
+if not isWindows:
+    from ansible_runner import run
+    from ansible.inventory.manager import InventoryManager
+    from ansible.parsing.dataloader import DataLoader
+    from ansible.vars.manager import VariableManager
 from wakeonlan import send_magic_packet
 
 class MachineManager(BaseManager):
@@ -73,10 +74,13 @@ class MachineManager(BaseManager):
             return jsonify({"message": "Failed to set up SSH keys"}), 500
     
     def setup_host_inventory(self, host):
-        loader = DataLoader()
-        inventory = InventoryManager(loader=loader)
-        inventory.add_host(host)
-        return inventory, loader
+        if not isWindows:
+            loader = DataLoader()
+            inventory = InventoryManager(loader=loader)
+            inventory.add_host(host)
+            return inventory, loader
+        else:
+            return None, None
         
     
     def shutdown(self, id):

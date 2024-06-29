@@ -76,15 +76,20 @@ class NobreakManager(BaseManager):
         return response
     
     def add_nobreak_to_ups_conf(self, nobreak):
+        nobreak_config = [
+            f"#{nobreak.name}#S",
+            f"[{nobreak.name}]",
+            f"\tdriver = {nobreak.driver}",
+            f"\tport = {nobreak.port}",
+            f'\tdesc = "{nobreak.description}"'
+        ] + [
+            f"\t{arg.key} = {arg.value}" if arg.value else f"\t{arg.key}"
+            for arg in nobreak.arguments
+        ] + [
+            f"#{nobreak.name}#E"
+        ]
         with open(self.appsettings.UPS_CONF_PATH, "a") as f:
-            f.write(f"#{nobreak.name}#S\n")
-            f.write(f"[{nobreak.name}]\n")
-            f.write(f"\tdriver = {nobreak.driver}\n")
-            f.write(f"\tport = {nobreak.port}\n")
-            f.write(f"\tdesc = \"{nobreak.description}\"\n")
-            for argument in nobreak.arguments:
-                f.write(f"\t{argument.key} = \"{argument.value}\"\n")
-            f.write(f"#{nobreak.name}#E\n")
+            f.write("\n".join(nobreak_config) + "\n")
     
     def delete_nobreak_from_ups_conf(self, name):
         with open(self.appsettings.UPS_CONF_PATH, "r") as f:
