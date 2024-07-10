@@ -8,8 +8,8 @@ class Api():
     def get(self, url):
         return requests.get(self.url+url).json()
     
-    def post(self, data=None, json=None, parameters=None):
-        return requests.post(self.url, params=parameters, data=data, json=json).json()
+    def post(self, url, data=None, json=None, parameters=None):
+        return requests.post(self.url+url, params=parameters, data=data, json=json).json()
     
     def put(self, data=None, json=None, parameters=None):
         return requests.put(self.url, params=parameters, data=data, json=json).json()

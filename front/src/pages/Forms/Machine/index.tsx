@@ -23,8 +23,10 @@ import { DialogActions, ModalClose, ModalDialog, Typography, Modal } from "@mui/
 import { AxiosError, AxiosResponse } from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 import { OperationalSystemInput } from "@/components/OperationalSystemInput";
+import { useParams } from "react-router-dom";
 
 export const MachineForm = (props: any) => {
+	const { id } = useParams();
     const { api } = useApi();
     const [loading, setLoading] = useState(false);
     const { data: appSettings } = AppSettingsService.useGetAppSettings();
@@ -47,7 +49,8 @@ export const MachineForm = (props: any) => {
         ruleId: props.machine?.inheritRule ? "inherit" : props.machine?.ruleId,
         credentialId: props.machine?.credentialId || 0,
         inheritRule: props.machine?.inheritRule || false,
-        operationalSystemId: props.machine?.operationalSystemId || 1
+        operationalSystemId: props.machine?.operationalSystemId || 1,
+        nobreakId: props.machine?.nobreakId || id,
     }
     const {
         control,

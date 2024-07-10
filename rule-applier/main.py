@@ -28,14 +28,20 @@ while True:
     logger.info(f"Temperature: {sensorResponse['temperature']} - Humidity: {sensorResponse['humidity']}")
     #describe each ups
     for ups in upsList:
-        logger.info(f"{ups.name} - {ups.description}")
-        logger.info(f"Checking rules to machines vinculated to ups {ups.name}...")
-        logger.info(f"UPS {ups.name}")
+        logger.info(f"=======================UPS {ups.name} START =======================")
+        if not ups.machines:
+            logger.info(f"No machines vinculated to ups \"{ups.name}\"")
+            logger.info(f"=======================UPS {ups.name} END =======================")
+            continue
+        logger.info(f"Checking rules to machines vinculated to ups \"{ups.name}\"...")
         for machine in ups.machines:
+            logger.info(f"-----------------{machine.name} - {machine.description}--------------")
             logger.info(f"Machine {machine.name} - {machine.description}")
             logger.info(f"Machine {machine.name} is online: {machine.isOnline}")
             logger.info(f"Applying rule to machine {machine.name}...")
-            machine.apply_rule(sensorResponse['temperature'], sensorResponse['humidity'])
+            machine.apply_rule(sensorResponse, ups)
+            logger.info(f"-----------------{machine.name} - {machine.description}--------------")
+        logger.info(f"=======================UPS {ups.name} END =======================")
     
     logger.info("...")
     time.sleep(5)

@@ -12,6 +12,7 @@ if not isWindows:
     from ansible.parsing.dataloader import DataLoader
     from ansible.vars.manager import VariableManager
 from wakeonlan import send_magic_packet
+from ping3 import ping, verbose_ping
 
 class MachineManager(BaseManager):
     def __init__(self):

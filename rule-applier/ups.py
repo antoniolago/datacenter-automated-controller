@@ -16,13 +16,31 @@ class Ups:
         self.machines = []
         self.rule = ups['rule']
         self.instantiate_machines(ups)
-        #self.outputVoltage = ups['outputVoltage']
-        #self.inputVoltage = ups['inputVoltage']
-        #self.batteryVoltage = ups['batteryVoltage']
-        #self.batteryCharge = ups['batteryCharge']
-        #self.load = ups['load']
+        #if outputVoltage is None, assign it NOne
+        try:
+            self.outputVoltage = ups['outputVoltage']
+        except:
+            self.outputVoltage = None
+        #Make the same for others:
+        try:
+            self.inputVoltage = ups['inputVoltage']
+        except:
+            self.inputVoltage = None
+        try:
+            self.batteryVoltage = ups['batteryVoltage']
+        except:
+            self.batteryVoltage = None
+        try:
+            self.batteryCharge = ups['batteryCharge']
+        except:
+            self.batteryCharge = None
+        try:
+            self.load = ups['load']
+        except:
+            self.load = None
+        
 
     def instantiate_machines(self, ups):
         for machine in ups['machines']:
-            self.machines.push(Machine(machine))
+            self.machines.append(Machine(machine))
     

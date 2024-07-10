@@ -5,6 +5,7 @@ import { Console } from '@/styles/Shared';
 import { AppSettingsService } from '@/core/services/appsettings';
 import { RuleApplierService } from '@/core/services/rule-applier';
 import { socket } from '@/core/services/socket';
+import moment from 'moment';
 
 const RuleApplierOutputModal: React.FC = () => {
     const [open, setOpen] = useState(false);
@@ -36,16 +37,19 @@ const RuleApplierOutputModal: React.FC = () => {
 
     return (
         <div>
-            <Button onClick={handleOpen}>RuleApplier output</Button>
+            <Button variant="outlined" onClick={handleOpen}>RuleApplier output</Button>
             <Modal open={open} onClose={handleClose}>
-                <ModalDialog>
+                <ModalDialog sx={{width: "90%"}}>
                     <ModalClose />
                     <div>
-                        <h2>SocketIO Output</h2>
+                        <h4>RuleApplier output</h4>
+                        <hr></hr>
                         {/* <pre>{output}</pre> */}
 
                         <Console elevation={3}>
                             {ruleApplierOutput?.map((row: any) => {
+                                var date = new Date(row[0]);
+                                console.log(date)
                                 return (
                                     <>
                                         {row[1]?.data || row}

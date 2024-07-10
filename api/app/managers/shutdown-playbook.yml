@@ -1,9 +1,10 @@
 - name: Shutdown machine
   hosts: all
   tasks:
-    # - name: Shutdown Linux machine
-    #   shell: "shutdown now"
-    #   when: "'ansible_os_family' in hostvars[inventory_hostname] and hostvars[inventory_hostname]['ansible_os_family'] != 'Windows'"
+    - name: Shutdown Linux machine
+      shell: "shutdown now"
+      when: ansible_os_family != 'Windows'
+
     - name: Shutdown Windows machine
       win_command: "shutdown /s /t 0"
-      # when: "'ansible_os_family' in hostvars[inventory_hostname] and hostvars[inventory_hostname]['ansible_os_family'] == 'Windows'"
+      when: ansible_os_family == 'Windows'

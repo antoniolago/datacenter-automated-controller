@@ -32,6 +32,9 @@ class NobreakManager(BaseManager):
         nobreaks = self.get_all()
         for nobreak in nobreaks:
             nobreak = self.map_upsc_properties(nobreak)
+            for machine in nobreak.machines:
+                if machine.host:
+                    machine.isOnline = is_machine_online(machine.host)
         return model_to_dict(nobreaks)
     
     def get_upsd_output(self):
@@ -42,7 +45,7 @@ class NobreakManager(BaseManager):
         nobreak = self.get(id, "id")
         nobreak = self.map_upsc_properties(nobreak)
         for machine in nobreak.machines:
-            machine.isOnline = is_machine_online(machine.ip, 22)
+            machine.isOnline = is_machine_online(machine.host)
         return model_to_dict(nobreak)
     
     def get_driver_console_output(self, id):
