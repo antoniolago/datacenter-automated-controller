@@ -70,7 +70,7 @@ class Machine:
             logger.info(f"Applying wake-on-lan to: {machine_id}...")
             
             # Make the POST request
-            response = requests.post(f"{url}/machine/wake_on_lan", json={"id": machine_id})
+            response = requests.post(f"{url}/machine/wol", json={"id": machine_id})
             
             # Check for response status
             if response.status_code == 200:
