@@ -25,7 +25,6 @@ import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import { ReactNode, useContext, useEffect, useState } from 'react';
 import { AppBar, BadgeAmbiente, DrawerHeader, closedMixin, openedMixin } from './styles';
 import { Badge, ClickAwayListener, Collapse } from '@mui/material';
-import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
 import { useLocation, useNavigate } from 'react-router';
 import SeletorTema from '@/components/ThemeSelector';
 import { TemaContext } from '@/contexts/Tema';
@@ -38,11 +37,11 @@ import { TemaService } from '@/core/services/tema';
 import { Card, CardContent, Chip, Tooltip } from '@mui/joy';
 import { SensorService } from '@/core/services/sensor';
 import RuleApplierOutputModal from '../RuleApplierOutputModal';
+import SensorCard from '@/pages/Forms/SensorCard';
 
 const Layout = (props: any) => {
     const { isDarkTheme, setIsDarkTheme } = useContext(TemaContext);
     // const { data: usuario } = UsuarioService.useGetUserInfo();
-    const { data: sensorData } = SensorService.useGetData();
     const { isMobile } = TemaService.useGetIsMobile();
 
     const Drawer = styled(MuiDrawer, {
@@ -79,77 +78,6 @@ const Layout = (props: any) => {
             icon: <HomeIcon />,
             path: '/'
         },
-        // {
-        //     id: 'comunicacao',
-        //     text: 'Comunicação',
-        //     icon: <BadgeEmail />,
-        //     path: '/comunicacao'
-        // },
-        // {
-        //     id: 'cadastro',
-        //     text: 'Cadastro',
-        //     icon: <DescriptionIcon />,
-        //     path: '/cadastro',
-        //     subItems: [
-        //         {
-        //             text: 'Meus Dados',
-        //             icon: <ContactPageIcon />,
-        //             path: '/cadastro',
-        //         },
-        //         // {
-        //         //     text: 'Dependentes',
-        //         //     icon: <FamilyRestroomIcon />,
-        //         //     path: '/cadastro/dependentes',
-        //         // },
-        //         {
-        //             text: 'Instituição de Ensino',
-        //             icon: <BusinessIcon />,
-        //             path: '/cadastro/escola',
-        //         },
-        //     ],
-        // },
-        // {
-        //     id: 'financeiro',
-        //     text: 'Financeiro',
-        //     icon: <AccountBalanceWallet />,
-        //     path: '/financeiro',
-        //     subItems: [
-        //         {
-        //             text: 'Faturas',
-        //             icon: <BadgeFaturas />,
-        //             path: '/financeiro',
-        //         },
-        //         {
-        //             text: 'Imposto de Renda',
-        //             icon: <Box sx={{ 'path': { fill: "currentColor" } }}>
-        //                 <ReceitaFederalIcon style={{ width: '25px' }} />
-        //             </Box>,
-        //             path: '/financeiro/imposto-renda',
-        //         },
-        //         {
-        //             text: 'Consultas Convênios',
-        //             icon: <Box sx={{ 'path': { fill: "currentColor" } }}>
-        //                 <LocalHospitalIcon />
-        //             </Box>,
-        //             path: '/financeiro/consultas-convenios',
-        //         }
-        //         // Add more subItems here as needed
-        //     ],
-        // },
-        // {
-        //     id: 'questionarios',
-        //     text: 'Questionários',
-        //     icon: <BadgeQuestionario />,
-        //     path: '/questionarios',
-        // },
-        // {
-        //     id: 'vantagens',
-        //     text: 'Sinpro/RS Vantagens',
-        //     icon: <CreditCardIcon />,
-        //     path: '/vantagens',
-        //     somenteSocio: true
-        // },
-        // Add more top-level items here as needed
     ];
     const [collapseStates, setCollapseStates] = useState<any>(
         {
@@ -220,30 +148,7 @@ const Layout = (props: any) => {
                         {/* <ContentProfile /> */}
                         
                         <RuleApplierOutputModal />
-                        <Card color="success" sx={{ textAlign: 'right', display: 'flex', paddingY: '5px' }}>
-                            <CardContent sx={{ flexDirection: 'row', alignItems: 'center' }}>
-                                <Box sx={{ height: '100%' }}>
-                                    <DeviceThermostatIcon />
-                                    
-                                </Box>
-                                <Box sx={{ mr: 3 }}>
-                                    <Typography>
-                                        Temperatura:
-                                    </Typography>
-                                    <Typography>
-                                        Umidade:
-                                    </Typography>
-                                </Box>
-                                <Box>
-                                    <Typography>
-                                        {sensorData?.temperature} ºC
-                                    </Typography>
-                                    <Typography>
-                                        {sensorData?.humidity} %
-                                    </Typography>
-                                </Box>
-                            </CardContent>
-                        </Card>
+                        <SensorCard />
                     </Toolbar>
                 </AppBar>
                 <Drawer

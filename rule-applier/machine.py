@@ -96,8 +96,8 @@ class Machine:
         rule = self.rule
 
         logger.info("Fetching sensor data...")
-        humidity = sensorData["humidity"]
-        temperature = sensorData["temperature"]
+        humidity = sensorData["data"]["humidity"]
+        temperature = sensorData["data"]["temperature"]
         logger.info(f"Sensor data - Humidity: {humidity}, Temperature: {temperature}")
         if nobreak.batteryCharge is not None:
             isNobreakStatsAvailable = True

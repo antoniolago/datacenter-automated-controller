@@ -24,8 +24,8 @@ while True:
 
     logger.info("UPSs found: " + str(len(upsList)))
     logger.info("Getting sensor data...")
-    sensorResponse = api.get("/sensor")
-    logger.info(f"Temperature: {sensorResponse['temperature']} - Humidity: {sensorResponse['humidity']}")
+    sensorResponse = api.get("/sensor/0")
+    logger.info(f"Temperature: {sensorResponse['data']['temperature']} - Humidity: {sensorResponse['data']['humidity']}")
     #describe each ups
     for ups in upsList:
         logger.info(f"=======================UPS {ups.name} START =======================")

@@ -35,6 +35,7 @@ class BaseManager:
 
     def add(self, obj, commit=False):
         try:
+            obj["id"] = None
             self.map_obj(obj)
             db.session.add(self.mapped_obj)
             if commit:

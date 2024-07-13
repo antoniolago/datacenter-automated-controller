@@ -58,12 +58,12 @@ class MachineManager(BaseManager):
         
         return extra_vars
     
-    def setup_ssh(self, machine):
+    def setup_machine(self, machine):
         inventory_data = f"""[all]\n{machine.host}"""
         r = run(
             inventory=inventory_data,
             extravars=self.returns_extra_vars(machine),
-            playbook='/api/app/managers/setup_ssh.yaml',
+            playbook='/api/app/managers/setup_machine.yaml',
             suppress_env_files=True
         )
         if r.status == 'successful':
@@ -82,7 +82,7 @@ class MachineManager(BaseManager):
     
     def shutdown(self, id):
         machine = self.get(id, "id")
-        self.setup_ssh(machine)
+        self.setup_machine(machine)
         inventory, loader = self.setup_host_inventory(machine.host)
         path = '/ssh/' + machine.name
         privateKeyPath = path + '/id_rsa'

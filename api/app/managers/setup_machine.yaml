@@ -51,6 +51,14 @@
         }
       when: ansible_os_family == 'Windows'
       changed_when: false
+      
+    - name: Ensure WOL is enabled on Windows
+      win_shell: |
+        $path = 'HKLM:\SYSTEM\CurrentControlSet\Control\Session Manager\Power'
+        set-itemproperty $path HiberbootEnabled 0 -type dword
+        cctk --valsetuppwd=pass --wakeonlan=LanOnly --deepsleepctrl=disabled
+      when: ansible_os_family == 'Windows'
+      changed_when: false
 
     - name: Ensure Python is present on Linux
       command: /usr/bin/env python3 --version

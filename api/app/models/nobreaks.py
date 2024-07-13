@@ -4,12 +4,12 @@ from sqlalchemy import event
 
 class Nobreaks(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True)
-    name = db.Column(db.Text, index=True, unique=True)
-    driver = db.Column(db.Text, index=True, unique=False)
-    description = db.Column(db.Text, index=True, unique=False)
-    port = db.Column(db.Text, index=True, unique=False)
+    name = db.Column(db.Text, index=False, unique=True)
+    driver = db.Column(db.Text, index=False, unique=False)
+    description = db.Column(db.Text, index=False, unique=False)
+    port = db.Column(db.Text, index=False, unique=False)
     arguments = relationship("Arguments", cascade="all, delete-orphan", lazy='joined')
-    ruleId = db.Column(db.Integer, db.ForeignKey('rules.id'), index=True, unique=False)
+    ruleId = db.Column(db.Integer, db.ForeignKey('rules.id'), index=False, unique=False)
     rule = relationship("Rules", backref="nobreak", lazy='joined')
     machines = relationship("Machines", cascade="all, delete-orphan", lazy='joined')
     

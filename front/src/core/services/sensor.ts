@@ -43,9 +43,9 @@ import { ISensor, ISensorData } from '../types/sensor';
 // };
 const useGetData = () => {
   const { api } = useApi();
-  var queryOptions: UseQueryOptions<AxiosResponse<ISensorData>, Error, AxiosResponse<ISensorData>, any> = {
+  var queryOptions: UseQueryOptions<AxiosResponse<ISensor>, Error, AxiosResponse<ISensor>, any> = {
     queryKey: ["sensor-data"],
-    queryFn: () => api.get(apiRoutes.getSensorData),
+    queryFn: () => api.get(apiRoutes.getSensorData+"/0"),
     retry: false,
     staleTime: Infinity,
     enabled: true
