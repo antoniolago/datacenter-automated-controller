@@ -43,15 +43,15 @@ import { ISensor, ISensorData } from '../types/sensor';
 // };
 const useGetData = () => {
   const { api } = useApi();
-  var queryOptions: UseQueryOptions<AxiosResponse<ISensor>, Error, AxiosResponse<ISensor>, any> = {
+  var queryOptions: UseQueryOptions<AxiosResponse<any>, Error, AxiosResponse<any>, any> = {
     queryKey: ["sensor-data"],
-    queryFn: () => api.get(apiRoutes.getSensorData+"/0"),
+    queryFn: () => api.get(apiRoutes.getSensorData+"/1"),
     retry: false,
     staleTime: Infinity,
     enabled: true
   };
   const context = useQuery(queryOptions)
-  return { ...context, data: context?.data?.data };
+  return { ...context, data: context?.data?.data?.data };
 }
 export const SensorService = {
   useGetData,

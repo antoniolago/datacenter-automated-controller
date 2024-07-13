@@ -11,6 +11,10 @@ interface IToken {
   username: string;
 }
 
+export interface ApiResponse {
+  data: any;
+}
+
 export const AuthCookieName = "auth_token";
 export const useApi = () => {
   const getApiUrl = () => {

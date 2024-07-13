@@ -6,7 +6,7 @@ class Sensors(db.Model):
     id = db.Column(db.Integer, primary_key=True, index=True, unique=True)
     name = db.Column(db.Text, index=False, unique=False)
     description = db.Column(db.Text, index=False, unique=False)
-    pin = db.Column(db.Integer, index=False, unique=False)
+    pin = db.Column(db.Integer, default=0, nullable=False, index=False, unique=False)
     minCriticalTemperatureThreshold = db.Column(db.Text, index=False, unique=False)
     maxCriticalTemperatureThreshold = db.Column(db.Text, index=False, unique=False)
     minCriticalHumidityThreshold = db.Column(db.Text, index=False, unique=False)

@@ -49,7 +49,6 @@ const RuleApplierOutputModal: React.FC = () => {
                         <Console elevation={3}>
                             {ruleApplierOutput?.map((row: any) => {
                                 var date = new Date(row[0]);
-                                console.log(date)
                                 return (
                                     <>
                                         {row[1]?.data || row}

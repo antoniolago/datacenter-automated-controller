@@ -19,17 +19,21 @@ const SensorCard = (props: any) => {
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const { api } = useApi();
     useEffect(() => {
+        console.log(sensorData)
         if (sensorData) {
             reset({
                 id: sensorData.id,
                 name: sensorData.name,
+                description: sensorData.description,
                 pin: sensorData.pin,
+                //Temperature thresholds
                 minCriticalTemperatureThreshold: sensorData.minCriticalTemperatureThreshold,
                 maxCriticalTemperatureThreshold: sensorData.maxCriticalTemperatureThreshold,
-                minCriticalHumidityThreshold: sensorData.minCriticalHumidityThreshold,
-                maxCriticalHumidityThreshold: sensorData.maxCriticalHumidityThreshold,
                 minWarningTemperatureThreshold: sensorData.minWarningTemperatureThreshold,
                 maxWarningTemperatureThreshold: sensorData.maxWarningTemperatureThreshold,
+                //Humidity thresholds
+                minCriticalHumidityThreshold: sensorData.minCriticalHumidityThreshold,
+                maxCriticalHumidityThreshold: sensorData.maxCriticalHumidityThreshold,
                 minWarningHumidityThreshold: sensorData.minWarningHumidityThreshold,
                 maxWarningHumidityThreshold: sensorData.maxWarningHumidityThreshold,
             });
@@ -37,7 +41,8 @@ const SensorCard = (props: any) => {
     }, [sensorData]);
     const validationSchema = Yup.object().shape({
         name: Yup.string().required("Name is required"),
-        port: Yup.string().required("Port is required"),
+        pin: Yup.string().required("Pin is required"),
+        description: Yup.string().required("Description is required"),
         minCriticalTemperatureThreshold: Yup.number()
             .required("Min Critical Temperature Threshold is required"),
         maxCriticalTemperatureThreshold: Yup.number()
@@ -59,7 +64,8 @@ const SensorCard = (props: any) => {
     const defaultValuesObj = {
         id: 0,
         name: "Default Sensor", 
-        port: 1,
+        description: "Description", 
+        pin: 1,
         minCriticalTemperatureThreshold: 10,
         maxCriticalTemperatureThreshold: 30,
         minCriticalHumidityThreshold: 10,
@@ -216,6 +222,7 @@ const SensorCard = (props: any) => {
                                     error={!!errors.name}
                                     helperText={errors.name?.message}
                                 />
+                                {errors.name && <Typography color="danger">{errors?.name?.message}</Typography>}
                             </Grid>
                             <Grid md={4}>
                                 <TextField
@@ -238,7 +245,6 @@ const SensorCard = (props: any) => {
                                     error={!!errors.pin}
                                     helperText={errors.pin?.message}
                                 />
-                                {errors.pin && <Typography color="danger">{errors.pin.message}</Typography>}
                             </Grid>
                         </Grid>
                         <Box sx={{ border: "1px solid", p: 1 }}>
@@ -281,11 +287,18 @@ const SensorCard = (props: any) => {
                         <Box sx={{ border: "1px solid", p: 1 }}>
                             <Grid container spacing={2}>
                                 <Grid md={12}>
-                                    <Box sx={{ border: "1px solid", p: 1, mt: 2, width: '100%' }}>
+                                    <Box sx={{ border: "1px solid", p: 2, mt: 2, width: '100%' }}>
                                         <Typography sx={{ textAlign: "center" }}>Humidity Thresholds</Typography>
                                         <CustomSlider
                                             step={0.5}
-                                            values={[10, 20, 80, 90]}
+                                            values={
+                                                [
+                                                    getValues("minCriticalHumidityThreshold"),
+                                                    getValues("minWarningHumidityThreshold"),
+                                                    getValues("maxWarningHumidityThreshold"),
+                                                    getValues("maxCriticalHumidityThreshold")
+                                                ]
+                                            }
                                             min={0}
                                             max={100}
                                             onChangeCallback={(e, value) => {

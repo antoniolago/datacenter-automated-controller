@@ -13,7 +13,7 @@ class RuleManager(BaseManager):
         super().__init__('sensor', Sensors)
     
     def get(self, id, filter):
-        sensor = super().get(id, filter, True)
+        sensor = super().get(id, filter, False)
         sensor["data"] = self.get_dht22_data(sensor["pin"])
         return sensor
     
