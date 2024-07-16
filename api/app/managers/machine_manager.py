@@ -45,7 +45,6 @@ class MachineManager(BaseManager):
         extra_vars = {'ansible_user': machine.credential.user if machine.credential.user else 'root'}
         extra_vars['ansible_password'] = machine.credential.password
         extra_vars['ansible_os_family'] = 'Windows'
-        
         if machine.operationalSystemId == OperationalSystemEnum["Linux"]:
             extra_vars['ansible_connection'] = 'ssh'
             if privateKeyPath:
@@ -59,6 +58,9 @@ class MachineManager(BaseManager):
         return extra_vars
     
     def setup_machine(self, machine):
+        if machine.credential is None:
+            raise Exception("Machine does not have a credential")
+        
         inventory_data = f"""[all]\n{machine.host}"""
         r = run(
             inventory=inventory_data,

@@ -12,6 +12,7 @@ import { SensorService } from "@/core/services/sensor";
 import { TextField } from "@mui/material";
 import { CustomSlider } from "@/components/CustomSlider";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const SensorCard = (props: any) => {
     const [showModal, setShowModal] = useState(false);
@@ -61,10 +62,11 @@ const SensorCard = (props: any) => {
             .required("Max Warning Humidity Threshold is required"),
     });
 
+    const queryClient = useQueryClient();
     const defaultValuesObj = {
         id: 0,
-        name: "Default Sensor", 
-        description: "Description", 
+        name: "Default Sensor",
+        description: "Description",
         pin: 1,
         minCriticalTemperatureThreshold: 10,
         maxCriticalTemperatureThreshold: 30,
@@ -148,8 +150,10 @@ const SensorCard = (props: any) => {
         apiMethod('/sensor', data)
             .then((res: AxiosResponse) => {
                 if (res.data.success) {
+                    queryClient.invalidateQueries({ queryKey: ['sensor-data'] });
                     setShowModal(false);
                     toast.success("Sensor data saved successfully");
+
                 } else {
                     // handle API response error
                 }

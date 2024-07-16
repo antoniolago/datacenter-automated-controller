@@ -46,22 +46,32 @@ export const NobreakPage = () => {
 			</Box>
 			<hr />
 			<Box>
-				<Alert
-					sx={{
-						fontSize: "21px",
-						textAlign: "center",
-						position: "absolute",
-    					zIndex: "10",
-						opacity: 0.9
-					}}
-					startDecorator={
-					  <CircularProgress size="lg" color="danger">
-						<Warning />
-					  </CircularProgress>
-					}
-					color="danger">
-					<Typography>UPS data not available, check logs for more information. The remaining data will be used to apply rules (sensors).</Typography>
-				</Alert>
+				{nobreak?.status &&
+					<Alert
+						sx={{
+							fontSize: "21px",
+							textAlign: "center",
+							position: "absolute",
+							zIndex: "10",
+							opacity: 0.9,
+							display: "inline",
+							left: "55px",
+							right: "0",
+							marginLeft: "auto",
+							marginRight: "auto",
+							width: "80%",
+							marginTop: "30px",
+						}}
+						startDecorator={
+							<Warning />
+							//   <CircularProgress size="lg" color="danger">
+							// 	<Warning />
+							//   </CircularProgress>
+						}
+						color="danger">
+						<Typography>UPS data not available, check logs for more information. <br />The temperature/humidity sensors data will still be used to apply rules.</Typography>
+					</Alert>
+				}
 				<Box sx={{
 					filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)",
 				}}>
@@ -118,9 +128,9 @@ export const NobreakPage = () => {
 										},
 									}}
 								/>
-								<Typography sx={{ mt: 2 }}>
+								{/* <Typography sx={{ mt: 2 }}>
 									{nobreak?.upsc_output?.["ups.status"]}
-								</Typography>
+								</Typography> */}
 							</Paper>
 						</Grid>
 						<Grid md={8}>
@@ -133,14 +143,14 @@ export const NobreakPage = () => {
 										<GaugeComponent
 											value={nobreak?.inputVoltage ?? 0}
 											minValue={0}
-											maxValue={3000}
+											maxValue={550}
 											arc={
 												{
 													subArcs:
 														[
-															{ color: 'green', limit: 300, showTick: true },
-															{ color: 'yellow', limit: 2600, showTick: true },
-															{ color: 'red', limit: 2700, showTick: true }
+															{ color: 'green', limit: 240, showTick: true },
+															{ color: 'yellow', limit: 300, showTick: true },
+															{ color: 'red', showTick: true }
 														]
 												}
 											}
@@ -167,14 +177,14 @@ export const NobreakPage = () => {
 										<GaugeComponent
 											value={nobreak?.outputVoltage ?? 0}
 											minValue={0}
-											maxValue={3000}
+											maxValue={550}
 											arc={
 												{
 													subArcs:
 														[
-															{ color: 'green', limit: 300, showTick: true },
-															{ color: 'yellow', limit: 2600, showTick: true },
-															{ color: 'red', limit: 2700, showTick: true }
+															{ color: 'green', limit: 240, showTick: true },
+															{ color: 'yellow', limit: 300, showTick: true },
+															{ color: 'red', showTick: false }
 														]
 												}
 											}
@@ -209,7 +219,7 @@ export const NobreakPage = () => {
 														[
 															{ color: 'green', limit: 15, showTick: true },
 															{ color: 'yellow', limit: 70, showTick: true },
-															{ color: 'red', showTick: true },
+															{ color: 'red', showTick: false },
 														]
 												}
 											}
@@ -223,16 +233,12 @@ export const NobreakPage = () => {
 								</Grid>
 							</Paper>
 						</Grid>
+						<Grid md={12}>
+							<Machines />
+						</Grid>
 					</Grid>
 				</Box>
-
 			</Box >
-			<br />
-			<Grid container spacing={2}>
-				<Grid md={12}>
-					<Machines />
-				</Grid>
-			</Grid>
 		</>
 	);
 }

@@ -76,6 +76,17 @@ const GaugeComponent = (props: Partial<GaugeComponentProps>) => {
     if (shouldInitChart()) chartHooks.initChart(gauge);
     gauge.prevProps.current = mergedProps.current;
   }, [props]);
+  useEffect(() => {
+    const observer = new MutationObserver(function () {
+      if (!selectedRef.current?.offsetParent) return;
+      
+      chartHooks.renderChart(gauge, true);
+      observer.disconnect()
+    });
+    observer.observe(selectedRef.current?.parentNode, { attributes: true, subtree: true });
+    return () => observer.disconnect();
+  }, [selectedRef.current?.parentNode?.offsetWidth, selectedRef.current?.parentNode?.offsetHeight]);
+
 
   useEffect(() => {
     const handleResize = () => chartHooks.renderChart(gauge, true);

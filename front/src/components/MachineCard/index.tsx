@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Typography from '@mui/material/Typography';
 import { Button, CardActionArea, CardActions } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -12,19 +12,29 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import React, { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { MachineForm } from '@/pages/Forms/Machine';
-import { Box, Grid, Modal, ModalClose, ModalDialog } from '@mui/joy';
+import { Accordion, AccordionDetails, AccordionGroup, AccordionSummary, Box, Grid, Modal, ModalClose, ModalDialog } from '@mui/joy';
 import { useApi } from '@/core/services/api';
 import { AxiosResponse } from 'axios';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { MachineService } from '@/core/services/machines';
 import Loading from '../Loading';
+import GaugeComponent from '../GaugeComponent';
+import { SensorService } from '@/core/services/sensor';
+import { GridExpandMoreIcon } from '@mui/x-data-grid';
+import RulesDashboard from '../RulesDashboard';
+import { NobreakService } from '@/core/services/nobreak';
 
 export const MachineCard = (props: any) => {
+
+    const { id } = useParams();
+    const machine = props.machine;
+    const { data: nobreak } = NobreakService.useGetNobreakById(id);
     const queryClient = useQueryClient();
+    const { data: sensor, isFetching } = SensorService.useGetData();
     const [showModalDelete, setShowModalDelete] = useState(false);
-    const { mutate: wolMachine, isPending: loadingWol } = MachineService.usePostWolMachine(props.machine.id);
-    const { mutate: shutdownMachine, isPending: loadingShutdown } = MachineService.usePostShutdownMachine(props.machine.id);
+    const { mutate: wolMachine, isPending: loadingWol } = MachineService.usePostWolMachine(machine.id);
+    const { mutate: shutdownMachine, isPending: loadingShutdown } = MachineService.usePostShutdownMachine(machine.id);
     const [showModal, setShowModal] = useState(false);
     const [loadingDelete, setLoadingDelete] = useState(false);
     const [deleteResponseAlert, setDeleteResponseAlert] = useState<any>();
@@ -33,7 +43,7 @@ export const MachineCard = (props: any) => {
 
     const deleteMachine = () => {
         setLoadingDelete(true);
-        api.delete("/machine/" + props.machine.id)
+        api.delete("/machine/" + machine.id)
             .then((res: AxiosResponse) => {
                 if (res.data.success) {
                     toast.success("Machine deleted successfully");
@@ -53,8 +63,9 @@ export const MachineCard = (props: any) => {
         setShowModalDelete(false);
         setShowModal(false);
     }
+    const machineRule = machine?.ruleId == "inherit" ? nobreak?.rule : machine?.rule;
     return (
-        props?.machine &&
+        machine &&
         <>
             <Modal
                 open={showModalDelete}
@@ -68,7 +79,7 @@ export const MachineCard = (props: any) => {
                         <Typography
                             style={{ fontSize: "17px", textAlign: "center", marginRight: '40px' }}
                         >
-                            Are you sure you want to delete machine "{props?.machine?.name}""
+                            Are you sure you want to delete machine "{machine?.name}""
                         </Typography>
                         <br />
                         <Grid>
@@ -86,22 +97,23 @@ export const MachineCard = (props: any) => {
                         <hr />
                     </form>
                 </ModalDialog>
-            </Modal><Modal
+            </Modal>
+            <Modal
                 open={showModal}
                 onClose={closeModal}
                 aria-labelledby="change-machine-modal-title"
                 aria-describedby="change-machine-modal-description"
             >
-                <ModalDialog size="md">
+                <ModalDialog size="lg" sx={{ width: "90%" }}>
                     <ModalClose />
                     <form>
                         <Box sx={{ display: 'flex' }}>
                             <Typography
                                 style={{ fontSize: "42px", textAlign: "center", marginRight: '40px' }}
                             >
-                                {props?.machine?.name}
+                                {machine?.name}
                             </Typography>
-                            <MachineForm machine={props?.machine} edit />
+                            <MachineForm machine={machine} edit />
                             <IconButton
                                 aria-label="delete machine"
                                 color="error"
@@ -109,10 +121,15 @@ export const MachineCard = (props: any) => {
                                 <DeleteIcon />
                             </IconButton>
                         </Box>
-                        <br />
+                        <hr />
                         <Grid container spacing={2}>
-                            <Grid md={6}>
+                            <Grid md={12}>
+                                <RulesDashboard rule={machineRule} machine={machine} />
+                            </Grid>
+                            <Grid md={12} sx={{textAlign: "center", mt: 3}}>
+                            <hr />
                                 <LoadingButton
+                                    sx={{mr: 2}}
                                     onClick={() => shutdownMachine()} color="error"
                                     loading={loadingShutdown}
                                     variant="outlined"
@@ -120,8 +137,6 @@ export const MachineCard = (props: any) => {
                                     <PowerSettingsNewIcon />
                                     <span>Shutdown</span>
                                 </LoadingButton>
-                            </Grid>
-                            <Grid md={6}>
                                 <LoadingButton
                                     onClick={() => wolMachine()}
                                     color="success"
@@ -133,8 +148,6 @@ export const MachineCard = (props: any) => {
                                 </LoadingButton>
                             </Grid>
                         </Grid>
-                        {/* {deleteResponseAlert} */}
-                        <hr />
                     </form>
                 </ModalDialog>
             </Modal>
@@ -159,6 +172,7 @@ export const MachineCard = (props: any) => {
                     </IconButton>
                 </CardActions> */}
             </Card>
+
         </>
     );
 }

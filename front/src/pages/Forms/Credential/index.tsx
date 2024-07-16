@@ -16,6 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Loading from "@/components/Loading";
 import { ICredential } from "@/core/types/credential";
 import { useApi } from "@/core/services/api";
+import { useQueryClient } from "@tanstack/react-query";
 export const AppContext = createContext(undefined);
 
 export const CredentialForm = (props: any) => {
@@ -24,6 +25,7 @@ export const CredentialForm = (props: any) => {
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [show, setShow] = useState(false);
     const [alert, setAlert] = useState<any>();
+    const queryClient = useQueryClient();
     const validationSchema = Yup.object().shape({
         name: Yup.string(),
         description: Yup.string()
@@ -67,6 +69,7 @@ export const CredentialForm = (props: any) => {
                     setAlert(<Alert severity="error"><AlertTitle>{res.data.message}</AlertTitle>{res.data.error}</Alert>);
                 }
                 setLoadingSubmit(false);
+                queryClient.refetchQueries({queryKey: ['credentials']});
                 if (props.fetchCredentials) props.fetchCredentials();
             })
             .catch((error: any) => {
