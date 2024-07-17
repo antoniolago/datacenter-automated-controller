@@ -72,10 +72,10 @@ export const NobreakPage = () => {
 						<Typography>UPS data not available, check logs for more information. <br />The temperature/humidity sensors data will still be used to apply rules.</Typography>
 					</Alert>
 				}
-				<Box sx={{
-					filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)",
-				}}>
-					<Grid container spacing={2}>
+				<Box >
+					<Grid container spacing={2} sx={{
+						".MuiPaper-root": {filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)"}
+					}}>
 						<Grid md={4}>
 							<Paper
 								className="p-4"

@@ -31,7 +31,7 @@ def add_nobreak():
 
 @app.route('/api/nobreak/<id>', methods=["PUT", "PATCH"])
 def update_nobreak(id):
-    return NobreakManager().update_nobreak(request.json, id, 'name')
+    return NobreakManager().update_nobreak(request.json, id, 'id')
 
 @app.route('/api/nobreak/<id>', methods=["DELETE"])
 @cross_origin()

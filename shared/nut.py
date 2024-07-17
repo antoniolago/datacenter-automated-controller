@@ -19,6 +19,9 @@ class Nut:
             raise Exception("Error: Driver not connected")
         return self.response_string_to_json(output)
 
+    def return_timestamp_string(self):
+        return datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("[%d/%m/%Y, %H:%M:%S]   ")
+
     def start_upsd(self):# Define the command to check if upsd is running and kill it if it is
         check_and_kill_command = 'if pgrep upsd; then pkill upsd; fi'
 
@@ -42,20 +45,29 @@ class Nut:
         start_command = ['ssh', '-t', 'root@nut', 'upsdrvctl', '-d', 'start', nobreak_name]
         redis = RedisHelper()
         nobreak_redis_key = self.appSettings.REDIS_UPSDRVCTL_STREAM_KEY.replace('{0}', str(nobreak_id))
+        socketio_key = self.appSettings.SOCKET_IO_UPSDRVCTL_EVENT.replace('{0}', str(nobreak_id))
 
-        # Read the output of the process in real-time, insert it into Redis, and trigger socketio event
+        pubsub = redis.subscribe_to_channel(self.appSettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', str(nobreak_id)))
         with subprocess.Popen(start_command, stdout=subprocess.PIPE) as p:
-            for line in iter(p.stdout.readline, b''):
-                lineStr = self.return_timestamp_string() + line.decode('utf-8').strip() + '\n'
-                redis.append_stream(nobreak_redis_key, lineStr)
-                self.socketio.emit('updateNobreakEvents')
-                self.socketio.emit(self.appSettings.SOCKET_IO_UPSDRVCTL_EVENT.replace('{0}', str(nobreak_id)), lineStr)
-        
-        p.stdout.close()
-        p.wait()
-        redis.append_stream(nobreak_redis_key, '\n')
-        redis.close()
-
+            try:
+                while p.poll() is None:
+                    for line in iter(p.stdout.readline, b''):
+                        lineStr = self.return_timestamp_string() + line.decode('utf-8').strip() + ' - start_ups_driver - \n'
+                        redis.append_stream(nobreak_redis_key, lineStr)
+                        self.socketio.emit(socketio_key, lineStr)
+                        self.socketio.emit('updateNobreakEvents')
+                        if pubsub.get_message():
+                            print("Received message to stop driver", flush=True)
+                            self.socketio.emit(socketio_key, self.return_timestamp_string() + """Shutting nobreak "{nobreak_name}" NUT process off """)
+                            self.socketio.emit('updateNobreakEvents')
+                            break
+            except Exception as e:
+                print(e)
+                p.stdout.close()
+                p.wait()
+                redis.append_stream(nobreak_redis_key, '\n')
+                redis.close()
+                raise
     def response_string_to_json(self, string):
         data = {}
         lines = string.split("\n")
@@ -71,7 +83,4 @@ class Nut:
                         pass
                 data[key] = value
         return data
-    
-    def return_timestamp_string(self):
-        return datetime.fromtimestamp(datetime.timestamp(datetime.now())).strftime("[%d/%m/%Y, %H:%M:%S]   ")
     

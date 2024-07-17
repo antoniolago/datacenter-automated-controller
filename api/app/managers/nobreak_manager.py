@@ -14,6 +14,7 @@ class NobreakManager(BaseManager):
         self.argument_manager = ArgumentManager()
         self.nut = Nut()
         self.appsettings = AppSettings()
+        self.redis = RedisHelper()
         
     def map_upsc_properties(self, nobreak):
         try:
@@ -38,7 +39,7 @@ class NobreakManager(BaseManager):
         return model_to_dict(nobreaks)
     
     def get_upsd_output(self):
-        output = RedisHelper().get_stream(self.appsettings.REDIS_UPSD_STREAM_KEY)
+        output = self.redis.get_stream(self.appsettings.REDIS_UPSD_STREAM_KEY)
         return output
         
     def get_nobreak(self, id):
@@ -49,13 +50,14 @@ class NobreakManager(BaseManager):
         return model_to_dict(nobreak)
     
     def get_driver_console_output(self, id):
-        output = RedisHelper().get_stream(self.appsettings.REDIS_UPSDRVCTL_STREAM_KEY.replace('{0}', str(id)))
+        output = self.redis.get_stream(self.appsettings.REDIS_UPSDRVCTL_STREAM_KEY.replace('{0}', str(id)))
         output.reverse()
         return output
 
     def add_nobreak(self, obj):
         obj['arguments'] = self.argument_manager.map_obj_list(obj['arguments'])
         response = self.add(obj)
+        self.redis.publish_to_channel(self.appsettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', str(response['id']), "add"))
         if is_response_success(response):
             self.add_nobreak_to_ups_conf(self.mapped_obj)
             db.session.commit()
@@ -66,9 +68,13 @@ class NobreakManager(BaseManager):
         
     def update_nobreak(self, obj, filterValue, filterKey):
         obj['arguments'] = self.argument_manager.map_obj_list(obj['arguments'])
-        self.update(obj, filterValue, filterKey)
+        oldName = self.get(filterValue, filterKey).name
+        obj = self.update(obj, filterValue, filterKey)
         db.session.commit()
-        self.update_nobreak_in_ups_conf(self.mapped_obj, oldName=filterValue)
+        id = filterValue
+        test = self.appsettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', id)
+        self.redis.publish_to_channel(test, "update")
+        self.update_nobreak_in_ups_conf(self.mapped_obj, oldName=oldName)
         return "Nobreak updated successfully."
         
     def delete_nobreak(self, id):
@@ -76,6 +82,7 @@ class NobreakManager(BaseManager):
         if is_response_success(response):
             self.delete_nobreak_from_ups_conf(id)
             db.session.commit()
+            self.redis.publish_to_channel(self.appsettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', str(id), "rm"))
         return response
     
     def add_nobreak_to_ups_conf(self, nobreak):

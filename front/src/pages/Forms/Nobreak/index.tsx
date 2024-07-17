@@ -95,7 +95,7 @@ export const NobreakForm = (props: any) => {
     const onSubmit = async (data: any) => {
         setLoadingSubmit(true);
         let apiMethod = props.edit ? api.put : api.post;
-        var url = `/nobreak${props.edit ? '/' + props.nobreak.name : ''}`;
+        var url = `/nobreak${props.edit ? '/' + props.nobreak.id : ''}`;
         console.log(url)
         apiMethod(url, data)
             .then((res: AxiosResponse<string>) => {

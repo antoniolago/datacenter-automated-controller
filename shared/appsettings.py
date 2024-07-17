@@ -100,3 +100,7 @@ class AppSettings:
     @property
     def NOTIFY_TYPE(self):
         return self._get_setting("NOTIFY_TYPE", "discord")
+    
+    @property
+    def REDIS_CHANGE_NOBREAK_CONFIG_EVENT(self):
+        return self._get_setting("REDIS_CHANGE_NOBREAK_CONFIG_EVENT")
