@@ -4,6 +4,7 @@ import time
 
 import sys
 from datetime import datetime
+from time import strftime, sleep
 import pathlib
 
 
@@ -47,42 +48,55 @@ class Launcher:
             #     continue
             # Define the command to launch the Python process
             idStr = str(nobreak['id'])
+            now = strftime('%d/%m/%Y:%H:%M:%S')
             command = ['python', '/nut-launcher/launchers/start_upsdrvctl.py', idStr, nobreak['name']]
             # Check if the process is already running
             nobreak_redis_key = self.appSettings.REDIS_UPSDRVCTL_STREAM_KEY.replace('{0}', idStr)
             socketio_key = self.appSettings.SOCKET_IO_UPSDRVCTL_EVENT.replace('{0}', idStr)
 
-            pubsub = self.redis.subscribe_to_channel(
-                self.appSettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', idStr)
-            )
+            channel = self.appSettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', idStr)
+            pubsub = self.redis.subscribe_to_channel(channel)
             if self.is_process_already_running('python', command, nobreak['name']):
-                # print('Process is already running: '+str(command), flush=True)
+                print('Process is already running: '+str(command), flush=True)
                 break
             else:
                 with subprocess.Popen(command, stdout=subprocess.PIPE) as p:
-                    while p.poll() is None:
-                        for line in iter(p.stdout.readline, b''):
-                            if line == 'Connection to nut closed.':
-                                print('TESTE', flush=True)
-                                break
-                            print("-", flush=True)
-                            print(line, flush=True)
-                            lineStr = self.return_timestamp_string() + line.decode('utf-8').strip() + ' - launch_subproccess_for_each_nobreak_that_is_not_already_running \n'
-                            self.redis.append_stream(nobreak_redis_key, lineStr)
-                            self.socketio.emit('updateNobreakEvents')
-                            self.socketio.emit(socketio_key, lineStr)
-                            print(pubsub.get_message(), flush=True)
-                            if pubsub.get_message():
-                                self.socketio.emit('updateNobreakEvents')
-                                self.socketio.emit(socketio_key, self.return_timestamp_string() + """Shutting nobreak "{nobreak_name}" NUT process off """)
-                                return
-                print('Process started: '+str(command), flush=True)
-            time.sleep(10)
+                    try:
+                        while p.poll() is None:
+                            for line in iter(p.stdout.readline, b''):
+                                if line == 'Connection to nut closed.':
+                                    print('TESTE', flush=True)
+                                    p.kill()
+                                    break
+                                print("-", flush=True)
+                                print(line, flush=True)
+                                messages = pubsub.get_message()
+                                if messages:
+                                    print(f'{now} - {messages["data"]}')
+                                else:
+                                    print(f'{now} - Nothing here!!!')
+                                # lineStr = self.return_timestamp_string() + line.decode('utf-8').strip() + '\n'
+                                # self.redis.append_stream(nobreak_redis_key, lineStr)
+                                # self.socketio.emit('updateNobreakEvents')
+                                # self.socketio.emit(socketio_key, lineStr)
+                                if messages is not None and messages["pattern"] is not None:
+                                    self.socketio.emit('updateNobreakEvents')
+                                    self.socketio.emit(socketio_key, self.return_timestamp_string() + """Shutting nobreak "{nobreak_name}" NUT process off """)
+                                    raise Exception("Received message to stop driver")
+                    except Exception as e:
+                        print(e)
+                        raise
+                    finally:
+                        p.stdout.close()
+                        p.wait()
+                        self.redis.append_stream(nobreak_redis_key, '\n')
+                        self.redis.close()
+                        
             
     def is_process_already_running(self, name, command, nobreakName=""):
         if nobreakName != "":
             # Check if any process with -a {nobreak_name} is running
-            check_command = ['ssh', 'root@nut', 'pgrep', '-f', f'-a {nobreakName}']
+            check_command = ['ssh', 'root@nut', 'pgrep', '-f', f'{nobreakName}']
             check_process = subprocess.run(check_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             # If the process is running, do not start it again
             if check_process.returncode == 0:

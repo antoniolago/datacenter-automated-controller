@@ -1,6 +1,7 @@
 import subprocess
 from shared.appsettings import AppSettings
 from shared.redishelper import RedisHelper
+from time import strftime, sleep
 from datetime import datetime
 from flask_socketio import SocketIO
 
@@ -42,25 +43,39 @@ class Nut:
     
     def start_ups_driver(self, nobreak_id, nobreak_name):
         # Start the driver if the process is not running
+        check_and_kill_command = ['ssh', '-t', 'root@nut', 'upsdrvctl', 'stop', nobreak_name]
+
+        # Define the SSH command to stop the driver and then start it
         start_command = ['ssh', '-t', 'root@nut', 'upsdrvctl', '-d', 'start', nobreak_name]
+        
+        # start_command = ['ssh', '-t', 'root@nut', 'upsdrvctl', '-d', 'start', nobreak_name]
         redis = RedisHelper()
+        now = strftime('%d/%m/%Y:%H:%M:%S')
         nobreak_redis_key = self.appSettings.REDIS_UPSDRVCTL_STREAM_KEY.replace('{0}', str(nobreak_id))
         socketio_key = self.appSettings.SOCKET_IO_UPSDRVCTL_EVENT.replace('{0}', str(nobreak_id))
-
-        pubsub = redis.subscribe_to_channel(self.appSettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', str(nobreak_id)))
+        channel = self.appSettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', str(nobreak_id))
+        pubsub = redis.subscribe_to_channel(channel)
+        with subprocess.Popen(check_and_kill_command, stdout=subprocess.PIPE) as d:
+            print("Stopping driver")
         with subprocess.Popen(start_command, stdout=subprocess.PIPE) as p:
             try:
                 while p.poll() is None:
                     for line in iter(p.stdout.readline, b''):
-                        lineStr = self.return_timestamp_string() + line.decode('utf-8').strip() + ' - start_ups_driver - \n'
+                        print(line, flush=True)
+                        lineStr = self.return_timestamp_string() + line.decode('utf-8').strip() + '\n'
                         redis.append_stream(nobreak_redis_key, lineStr)
                         self.socketio.emit(socketio_key, lineStr)
                         self.socketio.emit('updateNobreakEvents')
-                        if pubsub.get_message():
+                        messages = pubsub.get_message()
+                        if messages:
+                            print(f'{now} - {messages["data"]}')
+                        else:
+                            print(f'{now} - Nothing here!!!')
+                        if messages is not None and messages["pattern"] is not None:
                             print("Received message to stop driver", flush=True)
                             self.socketio.emit(socketio_key, self.return_timestamp_string() + """Shutting nobreak "{nobreak_name}" NUT process off """)
                             self.socketio.emit('updateNobreakEvents')
-                            break
+                            raise Exception("Received message to stop driver")
             except Exception as e:
                 print(e)
                 p.stdout.close()

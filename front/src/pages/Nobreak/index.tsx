@@ -46,7 +46,7 @@ export const NobreakPage = () => {
 			</Box>
 			<hr />
 			<Box>
-				{nobreak?.status &&
+				{!nobreak?.batteryCharge &&
 					<Alert
 						sx={{
 							fontSize: "21px",
@@ -73,10 +73,10 @@ export const NobreakPage = () => {
 					</Alert>
 				}
 				<Box >
-					<Grid container spacing={2} sx={{
-						".MuiPaper-root": {filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)"}
-					}}>
-						<Grid md={4}>
+					<Grid container spacing={2}>
+						<Grid md={4} sx={{
+							".MuiPaper-root": { filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)" }
+						}}>
 							<Paper
 								className="p-4"
 								sx={{
@@ -133,7 +133,9 @@ export const NobreakPage = () => {
 								</Typography> */}
 							</Paper>
 						</Grid>
-						<Grid md={8}>
+						<Grid md={8} sx={{
+							".MuiPaper-root": { filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)" }
+						}}>
 							<Paper
 								// className="p-4" 
 								sx={{ height: '100%' }}
