@@ -61,17 +61,23 @@ class Nut:
             try:
                 while p.poll() is None:
                     for line in iter(p.stdout.readline, b''):
+                        lineStr = line.decode('utf-8').strip()
                         print(line, flush=True)
-                        lineStr = self.return_timestamp_string() + line.decode('utf-8').strip() + '\n'
+                        if 'Connection to nut closed.' in lineStr:
+                            print('TESTE', flush=True)
+                            p.stdout.close()
+                            p.wait()
+                            redis.append_stream(nobreak_redis_key, '\n')
+                            redis.close()
+                            return
+                        lineStr = self.return_timestamp_string() + lineStr + '\n'
                         redis.append_stream(nobreak_redis_key, lineStr)
                         self.socketio.emit(socketio_key, lineStr)
                         self.socketio.emit('updateNobreakEvents')
                         messages = pubsub.get_message()
                         if messages:
                             print(f'{now} - {messages["data"]}')
-                        else:
-                            print(f'{now} - Nothing here!!!')
-                        if messages is not None and messages["pattern"] is not None:
+                        if messages is not None and messages["data"] == "update":
                             print("Received message to stop driver", flush=True)
                             self.socketio.emit(socketio_key, self.return_timestamp_string() + """Shutting nobreak "{nobreak_name}" NUT process off """)
                             self.socketio.emit('updateNobreakEvents')

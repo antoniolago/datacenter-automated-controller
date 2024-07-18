@@ -1,6 +1,6 @@
 import { UpsdOutput } from "@/components/UpsdOutput";
 
-const UpsdOutput = () => {
+const UpsddOutput = () => {
 
     return (
         <>
@@ -8,4 +8,4 @@ const UpsdOutput = () => {
         </>
     );
 }
-export default UpsdOutput;
+export default UpsddOutput;

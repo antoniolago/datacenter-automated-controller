@@ -39,9 +39,10 @@ export const NobreakPage = () => {
 				<Button
 					color='primary'
 					variant='plain'
-					label="Upsdrvctl Output"
 					onClick={() => setOpenConsole(true)}>
-					<ReceiptLongIcon /> upsdrvctl logs
+					<>
+						<ReceiptLongIcon /> upsdrvctl logs
+					</>
 				</Button>
 			</Box>
 			<hr />

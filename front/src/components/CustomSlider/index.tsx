@@ -23,6 +23,7 @@ export function CustomSlider(props) {
   );
   const [perc, setPerc] = useState(
     reverse
+    //@ts-ignore
       ? values?.map((val) => parseInt((1 - Math.abs(val / max)) * 100))
       : values?.map((val) => (val / max) * 100)
   );
@@ -33,18 +34,25 @@ export function CustomSlider(props) {
       setValue(tValues);
       if (!reverse) {
         setMarks([
+          //@ts-ignore
           parseInt((min + minVal) / 2, 10),
+          //@ts-ignore
           parseInt((minVal + maxVal) / 2, 10),
+          //@ts-ignore
           parseInt((maxVal + max) / 2, 10)
         ]);
         setPerc(tValues.map((val) => (val / max) * 100));
       } else {
         setMarks([
+          //@ts-ignore
           parseInt((-max + minVal) / 2, 10),
+          //@ts-ignore
           parseInt((minVal + maxVal) / 2, 10),
+          //@ts-ignore
           parseInt((maxVal + -min) / 2, 10)
         ]);
         setPerc(
+          //@ts-ignore
           tValues.map((val) => parseInt((1 - Math.abs(val / max)) * 100))
         );
       }

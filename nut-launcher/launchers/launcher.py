@@ -79,7 +79,7 @@ class Launcher:
                                 # self.redis.append_stream(nobreak_redis_key, lineStr)
                                 # self.socketio.emit('updateNobreakEvents')
                                 # self.socketio.emit(socketio_key, lineStr)
-                                if messages is not None and messages["pattern"] is not None:
+                                if messages is not None and messages["data"] == "update":
                                     self.socketio.emit('updateNobreakEvents')
                                     self.socketio.emit(socketio_key, self.return_timestamp_string() + """Shutting nobreak "{nobreak_name}" NUT process off """)
                                     raise Exception("Received message to stop driver")
