@@ -184,7 +184,7 @@ const SensorCard = (props: any) => {
                     </>
                     {isError || !sensorData ?
                         <>
-                            {error?.message ? error?.message : "No sensor data. Click here to configure."}
+                            {error?.stack ? error?.stack : "No sensor data. Click here to configure."}
                         </>
                         :
                         <>

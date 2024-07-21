@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import AlertaReconectando from '@/components/AlertaReconectando';
 import { useEffect } from 'react';
 import { useApi } from './api';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { ISensor, ISensorData } from '../types/sensor';
 
 // export const useGetSensors = () => {
@@ -45,7 +45,7 @@ const useGetData = () => {
   const { api } = useApi();
   var queryOptions: UseQueryOptions<AxiosResponse<any>, Error, AxiosResponse<any>, any> = {
     queryKey: ["sensor-data"],
-    queryFn: () => api.get(apiRoutes.getSensorData+"/1"),
+    queryFn: () => api.get(apiRoutes.getSensorData + "/1"),
     retry: false,
     staleTime: Infinity,
     enabled: true
