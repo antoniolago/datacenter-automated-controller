@@ -17,11 +17,14 @@ class SensorManager(BaseManager):
     def get_dht22_data(self, pin):
         try:
             import Adafruit_DHT  # Add this import statement
-
-            DHT_SENSOR = Adafruit_DHT.DHT22
-            humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, pin)
-            temperature = round(temperature, 2)
-            humidity = round(humidity, 2)
-            return {'temperature': temperature, 'humidity': humidity}
+        
         except:
             return {'temperature': 21, 'humidity': 50}
+        try:
+            DHT_SENSOR = Adafruit_DHT.DHT22
+            humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, pin)
+        except:
+            raise Exception("Failed to read DHT22 sensor data")
+        temperature = round(temperature, 2)
+        humidity = round(humidity, 2)
+        return {'temperature': temperature, 'humidity': humidity}
