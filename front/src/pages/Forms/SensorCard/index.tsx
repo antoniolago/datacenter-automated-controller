@@ -16,7 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const SensorCard = (props: any) => {
     const [showModal, setShowModal] = useState(false);
-    const { data: sensorData, isError: isNewSensor } = SensorService.useGetData();
+    const { data: sensorData, isError, error } = SensorService.useGetData();
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const { api } = useApi();
     useEffect(() => {
@@ -146,7 +146,7 @@ const SensorCard = (props: any) => {
 
     const onSubmit = async (data: any) => {
         setLoadingSubmit(true);
-        let apiMethod = isNewSensor ? api.post : api.put;
+        let apiMethod = isError ? api.post : api.put; //TODO REMOVE ISERROR
         apiMethod('/sensor', data)
             .then((res: AxiosResponse) => {
                 if (res.data.success) {
@@ -171,7 +171,7 @@ const SensorCard = (props: any) => {
     return (
         <>
             <Card
-                color={isNewSensor || !sensorData ? "danger" : cardColor}
+                color={isError || !sensorData ? "danger" : cardColor}
                 sx={{
                     textAlign: 'right',
                     display: 'flex',
@@ -179,9 +179,12 @@ const SensorCard = (props: any) => {
                 }}
                 onClick={() => setShowModal(true)}>
                 <CardContent sx={{ flexDirection: 'row', alignItems: 'center' }}>
-                    {isNewSensor || !sensorData ?
+                    <>
+                        {}
+                    </>
+                    {isError || !sensorData ?
                         <>
-                            No sensor data. Click here to configure.
+                            {error?.message ? error?.message : "No sensor data. Click here to configure."}
                         </>
                         :
                         <>
