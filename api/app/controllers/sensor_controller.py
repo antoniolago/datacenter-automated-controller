@@ -1,10 +1,7 @@
 
 from flask import Flask, jsonify, request
 from app import app
-try:
-    from app.managers.sensor_manager import SensorManager
-except:
-    from app.managers.sensor_manager_mock import SensorManager
+from app.managers.sensor_manager import SensorManager
 
 @app.route('/api/sensors', methods=["GET"])
 def get_sensors():
