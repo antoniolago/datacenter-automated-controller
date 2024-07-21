@@ -5,7 +5,7 @@ from app import db
 from app.util import *
 
 
-class RuleManager(BaseManager):
+class SensorManager(BaseManager):
     def __init__(self):
         super().__init__('sensor', Sensors)
     
