@@ -9,7 +9,7 @@ def get_sensors():
 
 @app.route('/api/sensor/<id>', methods=["GET"])
 def get_sensor(id):
-    return SensorManager().get(id, "id", True)
+    return SensorManager().get_sensor(id, "id")
 
 @app.route('/api/sensor', methods=["POST"])
 def add_sensor():

@@ -9,12 +9,12 @@ class SensorManager(BaseManager):
     def __init__(self):
         super().__init__('sensor', Sensors)
     
-    def get(self, id, filter):
-        sensor = super().get(id, filter, False)
-        sensor["data"] = self.get_dht22_data(sensor["pin"])
-        return sensor
+    def get_sensor(self, id, filter):
+        sensor = self.get(id, filter, False)
+        sensor.data = self.get_dht22_data(sensor.pin)
+        return create_response(True, model_to_dict(sensor))
     
-    def get_dht22_data(pin):
+    def get_dht22_data(self, pin):
         try:
             import Adafruit_DHT  # Add this import statement
 
