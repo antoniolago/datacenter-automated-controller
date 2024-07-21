@@ -2,13 +2,19 @@ version: "3.2"
 services:
   api:
     env_file: .deploy.env
+    hostname: dac-api
     image: ghcr.io/antoniolago/datacenter-automated-controller-api:${IMAGE_TAG}
     privileged: true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "5000:5000"
+      - "7:7/udp"
+      - "9:9/udp"
     volumes:
       - "/opt/datacenter-automated-controller/nut/:/nut/"
       - "/opt/datacenter-automated-controller/api/app/db:/api/app/db/"
+      - "/dev:/dev"
     networks:
       - datacenter-automated-controller
     depends_on:
