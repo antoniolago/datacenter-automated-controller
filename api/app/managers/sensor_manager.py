@@ -17,7 +17,7 @@ class SensorManager(BaseManager):
     
     def get_dht22_data(self, gpiopin):
         try:
-            sensor = DHT22(gpiopin)
+            sensor = DHT22(int(gpiopin))
             result = sensor.read()
             if result['valid']:
                 temperature = round(result['temp_c'], 2)
