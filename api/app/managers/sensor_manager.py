@@ -24,7 +24,7 @@ class SensorManager(BaseManager):
             DHT_SENSOR = Adafruit_DHT.DHT22
             humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, pin)
         except Exception as e:
-            raise Exception("Failed to read DHT22 sensor data on GPIO " + str(pin) + ": " + str(e.__traceback__))
+            raise Exception("Failed to read DHT22 sensor data on GPIO " + str(pin) + ": " + str(e))
         temperature = round(temperature, 2)
         humidity = round(humidity, 2)
         return {'temperature': temperature, 'humidity': humidity}
