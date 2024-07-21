@@ -19,6 +19,7 @@ const SensorCard = (props: any) => {
     const { data: sensorData, isError, error } = SensorService.useGetData();
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const { api } = useApi();
+    console.log(error)
     useEffect(() => {
         console.log(sensorData)
         if (sensorData) {
@@ -167,7 +168,8 @@ const SensorCard = (props: any) => {
 
     const thresholds = getValues();
     const cardColor = sensorData ? enumToDo(sensorData, thresholds) : "danger";
-
+    //@ts-ignore
+    var treatedErrMsg = error?.response?.data?.error?.error == "Error fetching sensor. Error:No sensor found with id = 1." ? "No sensor data. Click here to configure." : error?.response?.data?.error?.error;
     return (
         <>
             <Card
@@ -184,7 +186,8 @@ const SensorCard = (props: any) => {
                     </>
                     {isError || !sensorData ?
                         <>
-                            {error?.stack ? error?.stack : "No sensor data. Click here to configure."}
+                        {/*@ts-ignore   */}
+                            {treatedErrMsg}
                         </>
                         :
                         <>
