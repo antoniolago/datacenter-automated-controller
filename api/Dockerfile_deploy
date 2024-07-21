@@ -8,7 +8,7 @@ RUN apk update && apk add nut gcc musl-dev libffi-dev openssh
 RUN pip install --upgrade pip
 COPY ./api/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
-RUN pip install --upgrade pip setuptools wheel pigpio_dht
+RUN pip install --upgrade pip setuptools wheel pigpio_dht git
 ########################## INSTALL ADAFRUIT ######################################
 # WORKDIR /adafruit_install
 # RUN apk add --no-cache git
@@ -25,5 +25,5 @@ COPY ./shared /shared
 # RUN flask db upgrade
 
 #Gotta install Adafruit_DHT manually inside the prod container since the builder is not a PI environment
-ENTRYPOINT ["sh", "-c", "python /api/main.py"]
+ENTRYPOINT ["/api/entrypoint.sh"]
 # ENTRYPOINT [ "tail", "-f", "/dev/null" ]

@@ -4,7 +4,6 @@ from app.models.rules import Rules
 from app import db
 from app.util import *
 
-from pigpio_dht import DHT11, DHT22
 
 class SensorManager(BaseManager):
     def __init__(self):
@@ -15,15 +14,16 @@ class SensorManager(BaseManager):
         sensor.data = self.get_dht22_data(sensor.pin)
         return create_response(True, model_to_dict(sensor))
     
-    def get_dht22_data(self, gpiopin):
+    def get_dht22_data(self, pin):
         try:
-            sensor = DHT22(int(gpiopin))
-            result = sensor.read()
-            if result['valid']:
-                temperature = round(result['temp_c'], 2)
-                humidity = round(result['humidity'], 2)
-            else:
-                raise Exception("Invalid sensor data")
+            import Adafruit_DHT  # Add this import statement
         except Exception as e:
-            raise Exception(f"Failed to read DHT22 sensor data on GPIO {gpiopin}: {str(e)}")
+            raise Exception("Failed to import Adafruit_DHT library: " + str(e))
+        try:
+            DHT_SENSOR = Adafruit_DHT.DHT22
+            humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, pin)
+        except Exception as e:
+            raise Exception("Failed to read DHT22 sensor data on GPIO " + str(pin) + ": " + str(e))
+        temperature = round(temperature, 2)
+        humidity = round(humidity, 2)
         return {'temperature': temperature, 'humidity': humidity}
