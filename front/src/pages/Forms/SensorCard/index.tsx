@@ -1,5 +1,5 @@
 import { ISensor } from "@/core/types/sensor";
-import { Box, Button, Card, CardContent, DialogActions, Grid, Modal, ModalClose, ModalDialog, Typography, Slider } from "@mui/joy";
+import { Box, Button, Card, CardContent, DialogActions, Grid, Modal, ModalClose, ModalDialog, Typography, Slider, CircularProgress } from "@mui/joy";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -13,10 +13,11 @@ import { TextField } from "@mui/material";
 import { CustomSlider } from "@/components/CustomSlider";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import Loading from "@/components/Loading";
 
 const SensorCard = (props: any) => {
     const [showModal, setShowModal] = useState(false);
-    const { data: sensorData, isError, error } = SensorService.useGetData();
+    const { data: sensorData, isError, error, isFetching } = SensorService.useGetData();
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const { api } = useApi();
     console.log(error)
@@ -172,48 +173,50 @@ const SensorCard = (props: any) => {
     var treatedErrMsg = error?.response?.data?.error?.error == "Error fetching sensor. Error:No sensor found with id = 1." ? "No sensor data. Click here to configure." : error?.response?.data?.error?.error;
     return (
         <>
-            <Card
-                color={isError || !sensorData ? "danger" : cardColor}
-                sx={{
-                    textAlign: 'right',
-                    display: 'flex',
-                    paddingY: '5px'
-                }}
-                onClick={() => setShowModal(true)}>
-                <CardContent sx={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <>
-                        {}
-                    </>
-                    {isError || !sensorData ?
-                        <>
-                        {/*@ts-ignore   */}
-                            {treatedErrMsg}
-                        </>
-                        :
-                        <>
-                            <Box sx={{ height: '100%' }}>
-                                <DeviceThermostatIcon />
-                            </Box>
-                            <Box sx={{ mr: 3 }}>
-                                <Typography>
-                                    Temperature:
-                                </Typography>
-                                <Typography>
-                                    Humidity:
-                                </Typography>
-                            </Box>
-                            <Box>
-                                <Typography>
-                                    {sensorData?.data?.temperature} ºC
-                                </Typography>
-                                <Typography>
-                                    {sensorData?.data?.humidity} %
-                                </Typography>
-                            </Box>
-                        </>
-                    }
-                </CardContent>
-            </Card>
+            {isFetching ?
+                <Loading />
+                :
+                <Card
+                    color={isError || !sensorData ? "danger" : cardColor}
+                    sx={{
+                        textAlign: 'right',
+                        display: 'flex',
+                        paddingY: '5px'
+                    }}
+                    onClick={() => setShowModal(true)}>
+                    {isFetching}
+                    <CardContent sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {isError || !sensorData ?
+                            <>
+                                {/*@ts-ignore   */}
+                                {treatedErrMsg}
+                            </>
+                            :
+                            <>
+                                <Box sx={{ height: '100%' }}>
+                                    <DeviceThermostatIcon />
+                                </Box>
+                                <Box sx={{ mr: 3 }}>
+                                    <Typography>
+                                        Temperature:
+                                    </Typography>
+                                    <Typography>
+                                        Humidity:
+                                    </Typography>
+                                </Box>
+                                <Box>
+                                    <Typography>
+                                        {sensorData?.data?.temperature} ºC
+                                    </Typography>
+                                    <Typography>
+                                        {sensorData?.data?.humidity} %
+                                    </Typography>
+                                </Box>
+                            </>
+                        }
+                    </CardContent>
+                </Card>
+            }
             <Modal
                 open={showModal}
                 onClose={() => setShowModal(false)}>

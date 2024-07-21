@@ -3,17 +3,17 @@ WORKDIR /api
 RUN mkdir /shared
 ENV PYTHONPATH=/shared:$PYTHONPATH
 
-RUN apk update && apk add nut gcc musl-dev libffi-dev
+RUN apk update && apk add nut gcc musl-dev libffi-dev openssh
 
 RUN pip install --upgrade pip
 COPY ./api/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
-RUN pip install --upgrade pip setuptools wheel
+RUN pip install --upgrade pip setuptools wheel pigpio_dht
 ########################## INSTALL ADAFRUIT ######################################
-WORKDIR /adafruit_install
-RUN apk add --no-cache git
-RUN git clone https://github.com/adafruit/Adafruit_Python_DHT
-RUN cd Adafruit_Python_DHT && python setup.py build && python setup.py install --force-pi
+# WORKDIR /adafruit_install
+# RUN apk add --no-cache git
+# RUN git clone https://github.com/adafruit/Adafruit_Python_DHT
+# RUN cd Adafruit_Python_DHT && python setup.py build && python setup.py install --force-pi
 ########################## INSTALL ADAFRUIT ######################################
 WORKDIR /api
 COPY ./api /api
