@@ -47,9 +47,6 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                         tooltip: {
                                             text: `Too low temperature! ${machine?.name} will shutdown`
                                         },
-                                        onClick: () => console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
-                                        onMouseMove: () => console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"),
-                                        onMouseLeave: () => console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"),
                                     },
                                     {
                                         limit: rule.minTemperature + 2,
@@ -115,6 +112,14 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                         />
                         <Typography sx={{ textAlign: "center" }} variant="body2" color="text.secondary">
                             Temperature
+                        </Typography>
+                        <Typography
+                            sx={{ textAlign: "center" }}
+                            variant="body2"
+                            color="error.main"
+                        >
+                            This machine will <b>SHUTDOWN</b> if the temperature is below {" "}
+                            <b>{rule.minTemperature}ºC</b> or above <b>{rule.maxTemperature}ºC</b>
                         </Typography>
                     </Grid>
                     <Grid md={4}>
@@ -188,12 +193,12 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                 valueLabel: { formatTextValue: value => value + '%' },
                                 tickLabels: {
                                     type: 'outer',
-                                    defaultTickValueConfig: { 
-                                        formatTextValue: value => value + '%', 
-                                        style: { 
+                                    defaultTickValueConfig: {
+                                        formatTextValue: value => value + '%',
+                                        style: {
                                             fontSize: 10,
                                             color: theme.palette.text.primary
-                                        } 
+                                        }
                                     },
                                 }
                             }}
@@ -203,6 +208,14 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                         />
                         <Typography sx={{ textAlign: "center" }} variant="body2" color="text.secondary">
                             Humidity
+                        </Typography>
+                        <Typography
+                            sx={{ textAlign: "center" }}
+                            variant="body2"
+                            color="error.main"
+                        >
+                            This machine will <b>SHUTDOWN</b> if the humidity gets below {" "}
+                            <b>{rule.minHumidity}%</b> or above <b>{rule.maxHumidity}%</b>
                         </Typography>
                     </Grid>
 
@@ -232,74 +245,83 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                         The temperature/humidity sensors data will still be used to apply rules.
                                     </Typography>
                                 </Alert>
-}
-                                <Box sx={{
-                                    filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)",
-                                }}>
-                                    <GaugeComponent
-                                        type='semicircle'
-                                        arc={{
-                                            width: 0.2,
-                                            padding: 0.005,
-                                            cornerRadius: 1,
-                                            subArcs: [
-                                                {
-                                                    limit: 50,
-                                                    //@ts-ignore
-                                                    color: theme.palette.error.main,
-                                                    showTick: true,
-                                                    tooltip: {
-                                                        text: 'Too low charge!'
-                                                    },
-                                                    onClick: () => console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
-                                                    onMouseMove: () => console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"),
-                                                    onMouseLeave: () => console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"),
+                            }
+                            <Box sx={{
+                                filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)",
+                            }}>
+                                <GaugeComponent
+                                    type='semicircle'
+                                    arc={{
+                                        width: 0.2,
+                                        padding: 0.005,
+                                        cornerRadius: 1,
+                                        subArcs: [
+                                            {
+                                                limit: 50,
+                                                //@ts-ignore
+                                                color: theme.palette.error.main,
+                                                showTick: true,
+                                                tooltip: {
+                                                    text: 'Too low charge!'
                                                 },
-                                                {
-                                                    //@ts-ignore
-                                                    color: theme.palette.warning.main,
-                                                    showTick: true,
-                                                    tooltip: {
-                                                        text: 'Low charge!'
-                                                    }
-                                                },
-                                                {
-                                                    //@ts-ignore
-                                                    color: theme.palette.success.main,
-                                                    showTick: true,
-                                                    tooltip: {
-                                                        text: 'OK charge!'
-                                                    }
+                                                onClick: () => console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
+                                                onMouseMove: () => console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"),
+                                                onMouseLeave: () => console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"),
+                                            },
+                                            {
+                                                //@ts-ignore
+                                                color: theme.palette.warning.main,
+                                                showTick: true,
+                                                tooltip: {
+                                                    text: 'Low charge!'
                                                 }
-                                            ]
-                                        }}
-                                        pointer={{
-                                            color: '#345243',
-                                            length: 0.80,
-                                            width: 15,
-                                        }}
-                                        labels={{
-                                            descriptionLabel: {
-                                                labelText: 'Temperature'
                                             },
-                                            valueLabel: { formatTextValue: value => value + '%' },
-                                            tickLabels: {
-                                                ticks: [
-                                                    { value: rule.chargeToShutdown, valueConfig: { formatTextValue: value => value + '% Shutdown' } },
-                                                    { value: rule.chargeToWol, valueConfig: { formatTextValue: value => value + '% WoL' } },
-                                                ],
-                                                type: 'outer',
-                                                defaultTickValueConfig: { formatTextValue: value => value + '%', style: { fontSize: 10 } },
-                                            },
-                                        }}
-                                        value={nobreak?.batteryCharge}
-                                        minValue={0}
-                                        maxValue={100}
-                                    />
-                                    <Typography sx={{ textAlign: "center" }} variant="body2" color="text.secondary">
-                                        Charge
-                                    </Typography>
-                                </Box>
+                                            {
+                                                //@ts-ignore
+                                                color: theme.palette.success.main,
+                                                showTick: true,
+                                                tooltip: {
+                                                    text: 'OK charge!'
+                                                }
+                                            }
+                                        ]
+                                    }}
+                                    pointer={{
+                                        color: '#345243',
+                                        length: 0.80,
+                                        width: 15,
+                                    }}
+                                    labels={{
+                                        descriptionLabel: {
+                                            labelText: 'Temperature'
+                                        },
+                                        valueLabel: { formatTextValue: value => value + '%' },
+                                        tickLabels: {
+                                            ticks: [
+                                                { value: rule.chargeToShutdown, valueConfig: { formatTextValue: value => value + '% Shutdown' } },
+                                                { value: rule.chargeToWol, valueConfig: { formatTextValue: value => value + '% WoL' } },
+                                            ],
+                                            type: 'outer',
+                                            defaultTickValueConfig: { formatTextValue: value => value + '%', style: { fontSize: 10 } },
+                                        },
+                                    }}
+                                    value={nobreak?.batteryCharge}
+                                    minValue={0}
+                                    maxValue={100}
+                                />
+                                <Typography sx={{ textAlign: "center" }} variant="body2" color="text.secondary">
+                                    Charge
+                                </Typography>
+                                <Typography
+                                    sx={{ textAlign: "center" }}
+                                    variant="body2"
+                                    color="error.main"
+                                >
+                                    This machine will: <br/><b>SHUTDOWN</b>: if power is off and battery charge is below {" "}
+                                    <b> {rule.chargeToShutdown}%</b><br/>
+                                    <b>Wake-On-Lan</b> if power is on and battery charge is higher than <b>{rule.chargeToWol}%</b>
+                                </Typography>
+                            </Box>
                         </Box>
                     </Grid>
                 </Grid>
