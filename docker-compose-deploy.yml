@@ -15,6 +15,7 @@ services:
       - "/opt/datacenter-automated-controller/nut/:/nut/"
       - "/opt/datacenter-automated-controller/api/app/db:/api/app/db/"
       - "/dev:/dev"
+      - "/proc/cpuinfo:/proc/cpuinfo:ro"
     networks:
       - datacenter-automated-controller
     depends_on:
