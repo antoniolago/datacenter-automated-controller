@@ -42,13 +42,10 @@
       changed_when: false
 
     - name: Ensure Python is installed on Windows
-      win_shell: |
-        if (-not (Get-Command python3 -ErrorAction SilentlyContinue)) {
-          Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe -OutFile $env:TEMP\python-3.9.6-amd64.exe;
-          Start-Process -FilePath $env:TEMP\python-3.9.6-amd64.exe -ArgumentList '/quiet InstallAllUsers=1 PrependPath=1' -Wait;
-          Remove-Item $env:TEMP\python-3.9.6-amd64.exe;
-          [System.Environment]::SetEnvironmentVariable('PATH', $env:PATH + ';C:\Program Files\Python39\', [System.EnvironmentVariableTarget]::Machine);
-        }
+      win_chocolatey:
+        name: python
+        state: present
+        version: latest
       when: ansible_os_family == 'Windows'
       changed_when: false
       

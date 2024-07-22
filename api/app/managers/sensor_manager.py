@@ -4,6 +4,8 @@ from app.managers.base_manager import BaseManager
 from app.models.rules import Rules
 from app import db
 from app.util import *
+import adafruit_dht
+import board
 
 
 class SensorManager(BaseManager):
@@ -17,15 +19,15 @@ class SensorManager(BaseManager):
     
     def get_dht22_data(self, pin):
         try:
-            import Adafruit_DHT  # Add this import statement
+            print(board.D1)
+            dht = adafruit_dht.DHT22(board.D1)
+            try:
+                humidity = dht.humidity
+                temperature = dht.temperature
+            except Exception as e:
+                raise Exception("Failed to read DHT22 sensor data on GPIO " + str(pin) + ": " + str(e))
         except Exception as e:
             return self.get_oscillating_values()
-            raise Exception("Failed to import Adafruit_DHT library: " + str(e))
-        try:
-            DHT_SENSOR = Adafruit_DHT.DHT22
-            humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, pin)
-        except Exception as e:
-            raise Exception("Failed to read DHT22 sensor data on GPIO " + str(pin) + ": " + str(e))
         temperature = round(temperature, 2)
         humidity = round(humidity, 2)
         return {'temperature': temperature, 'humidity': humidity}
