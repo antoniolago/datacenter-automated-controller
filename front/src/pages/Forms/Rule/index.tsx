@@ -290,8 +290,10 @@ export const RuleForm = (props: any) => {
                                 <AccordionDetails sx={{ textAlign: "-webkit-center", alignItems: "center" }}>
                                     <GaugeTemperature rule={watch()} sensor={sensorData} />
                                     {sensorData.data?.temperature ?
+                                        //@ts-ignore
                                         <Typography variant="h6" sx={{ textAlign: "center" }}>Real Time Temperature</Typography>
                                         :
+                                        //@ts-ignore
                                         <Typography variant="h6" sx={{ textAlign: "center" }}>Sensor unavailable. Using mocked temperature</Typography>
                                     }
                                 </AccordionDetails>
@@ -311,8 +313,10 @@ export const RuleForm = (props: any) => {
                                 <AccordionDetails sx={{ textAlign: "-webkit-center", alignItems: "center" }}>
                                     <GaugeHumidity rule={watch()} sensor={sensorData} />
                                     {sensorData.data?.humidity ?
+                                        //@ts-ignore
                                         <Typography variant="h6" sx={{ textAlign: "center" }}>Real Time Humidity</Typography>
                                         :
+                                        //@ts-ignore
                                         <Typography variant="h6" sx={{ textAlign: "center" }}>Sensor unavailable. Using mocked humidity</Typography>
                                     }
                                 </AccordionDetails>

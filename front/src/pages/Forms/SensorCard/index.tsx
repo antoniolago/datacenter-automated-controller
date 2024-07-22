@@ -215,14 +215,14 @@ const SensorCard = (props: any) => {
                                 :
                                 <>
                                     <Box sx={{ height: '100%' }}>
-                                        <DeviceThermostatIcon  sx={{color: theme.palette.error.main}}  />
+                                        <DeviceThermostatIcon  sx={{color: tempCardColor}}  />
                                     </Box>
                                     <Box sx={{ mr: 3 }}>
                                         <Typography>
                                             Temperature:
                                         </Typography>
                                     </Box>
-                                    <Box>
+                                    <Box sx={{flex: "auto"}}>
                                         <Typography>
                                             {sensorData?.data?.temperature} ºC
                                         </Typography>
@@ -249,6 +249,7 @@ const SensorCard = (props: any) => {
                                 :
                                 <>
                                     <Box sx={{ height: '100%' }}>
+                                        {/* @ts-ignore */}
                                         <WaterDropIcon sx={{color: theme.palette.primary.main}} />
                                     </Box>
                                     <Box sx={{ mr: 3 }}>
@@ -256,7 +257,7 @@ const SensorCard = (props: any) => {
                                             Humidity:
                                         </Typography>
                                     </Box>
-                                    <Box>
+                                    <Box sx={{flex: "auto"}}>
                                         <Typography>
                                             {sensorData?.data?.humidity} %
                                         </Typography>
