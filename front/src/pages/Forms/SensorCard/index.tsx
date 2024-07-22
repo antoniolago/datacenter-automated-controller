@@ -1,5 +1,5 @@
 import { ISensor } from "@/core/types/sensor";
-import { Box, Button, Card, CardContent, DialogActions, Grid, Modal, ModalClose, ModalDialog, Typography, Slider, CircularProgress } from "@mui/joy";
+import { Box, Button, Card, CardContent, DialogActions, Grid, Modal, ModalClose, ModalDialog, Typography, Slider, CircularProgress, useTheme } from "@mui/joy";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { useEffect, useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,12 +8,15 @@ import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
 import * as Yup from "yup";
 import { AxiosError, AxiosResponse } from "axios";
 import { useApi } from "@/core/services/api";
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import { SensorService } from "@/core/services/sensor";
 import { TextField } from "@mui/material";
 import { CustomSlider } from "@/components/CustomSlider";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import Loading from "@/components/Loading";
+import GaugeTemperature from "@/components/GaugeTemperature";
+import GaugeHumidity from "@/components/GaugeHumidity";
 
 const SensorCard = (props: any) => {
     const [showModal, setShowModal] = useState(false);
@@ -42,6 +45,7 @@ const SensorCard = (props: any) => {
             });
         }
     }, [sensorData]);
+    const theme = useTheme();
     const validationSchema = Yup.object().shape({
         name: Yup.string().required("Name is required"),
         pin: Yup.string().required("Pin is required"),
@@ -114,31 +118,45 @@ const SensorCard = (props: any) => {
         value: i * 10
     }));
 
-    const enumToDo = (sensorData, thresholds) => {
-        const { temperature, humidity } = sensorData;
+    const getHumiCardColor = (sensorData, thresholds) => {
+        const { humidity } = sensorData.data;
         const {
-            minCriticalTemperatureThreshold,
-            maxCriticalTemperatureThreshold,
             minCriticalHumidityThreshold,
             maxCriticalHumidityThreshold,
-            minWarningTemperatureThreshold,
-            maxWarningTemperatureThreshold,
             minWarningHumidityThreshold,
             maxWarningHumidityThreshold,
         } = thresholds;
-
         if (
-            temperature < minCriticalTemperatureThreshold ||
-            temperature > maxCriticalTemperatureThreshold ||
             humidity < minCriticalHumidityThreshold ||
             humidity > maxCriticalHumidityThreshold
         ) {
             return "danger";
         } else if (
-            temperature < minWarningTemperatureThreshold ||
-            temperature > maxWarningTemperatureThreshold ||
-            humidity < minWarningHumidityThreshold ||
-            humidity > maxWarningHumidityThreshold
+            humidity > minWarningHumidityThreshold ||
+            humidity < maxWarningHumidityThreshold
+        ) {
+            return "warning";
+        } else {
+            return "success";
+        }
+    };
+
+    const getTempCardColor = (sensorData, thresholds) => {
+        const { temperature } = sensorData.data;
+        const {
+            minCriticalTemperatureThreshold,
+            maxCriticalTemperatureThreshold,
+            minWarningTemperatureThreshold,
+            maxWarningTemperatureThreshold,
+        } = thresholds;
+        if (
+            temperature < minCriticalTemperatureThreshold ||
+            temperature > maxCriticalTemperatureThreshold
+        ) {
+            return "danger";
+        } else if (
+            temperature > minWarningTemperatureThreshold ||
+            temperature < maxWarningTemperatureThreshold
         ) {
             return "warning";
         } else {
@@ -168,7 +186,8 @@ const SensorCard = (props: any) => {
     };
 
     const thresholds = getValues();
-    const cardColor = sensorData ? enumToDo(sensorData, thresholds) : "danger";
+    const tempCardColor = sensorData ? getTempCardColor(sensorData, thresholds) : "danger";
+    const humiCardColor = sensorData ? getHumiCardColor(sensorData, thresholds) : "danger";
     //@ts-ignore
     var treatedErrMsg = error?.response?.data?.error?.error == "Error fetching sensor. Error:No sensor found with id = 1." ? "No sensor data. Click here to configure." : error?.response?.data?.error?.error;
     return (
@@ -176,52 +195,83 @@ const SensorCard = (props: any) => {
             {isFetching ?
                 <Loading />
                 :
-                <Card
-                    color={isError || !sensorData ? "danger" : cardColor}
-                    sx={{
-                        textAlign: 'right',
-                        display: 'flex',
-                        paddingY: '5px'
-                    }}
-                    onClick={() => setShowModal(true)}>
-                    {isFetching}
-                    <CardContent sx={{ flexDirection: 'row', alignItems: 'center' }}>
-                        {isError || !sensorData ?
-                            <>
-                                {/*@ts-ignore   */}
-                                {treatedErrMsg}
-                            </>
-                            :
-                            <>
-                                <Box sx={{ height: '100%' }}>
-                                    <DeviceThermostatIcon />
-                                </Box>
-                                <Box sx={{ mr: 3 }}>
-                                    <Typography>
-                                        Temperature:
-                                    </Typography>
-                                    <Typography>
-                                        Humidity:
-                                    </Typography>
-                                </Box>
-                                <Box>
-                                    <Typography>
-                                        {sensorData?.data?.temperature} ºC
-                                    </Typography>
-                                    <Typography>
-                                        {sensorData?.data?.humidity} %
-                                    </Typography>
-                                </Box>
-                            </>
-                        }
-                    </CardContent>
-                </Card>
+                <Box>
+
+                    <Card
+                        color={tempCardColor}
+                        sx={{
+                            textAlign: 'right',
+                            display: 'flex',
+                            paddingY: '5px'
+                        }}
+                        onClick={() => setShowModal(true)}>
+                        {isFetching}
+                        <CardContent sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                            {isError || !sensorData ?
+                                <>
+                                    {/*@ts-ignore   */}
+                                    {treatedErrMsg}
+                                </>
+                                :
+                                <>
+                                    <Box sx={{ height: '100%' }}>
+                                        <DeviceThermostatIcon  sx={{color: theme.palette.error.main}}  />
+                                    </Box>
+                                    <Box sx={{ mr: 3 }}>
+                                        <Typography>
+                                            Temperature:
+                                        </Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography>
+                                            {sensorData?.data?.temperature} ºC
+                                        </Typography>
+                                    </Box>
+                                </>
+                            }
+                        </CardContent>
+                    </Card>
+                    <Card
+                        color={isError || !sensorData ? "danger" : humiCardColor}
+                        sx={{
+                            textAlign: 'right',
+                            display: 'flex',
+                            paddingY: '5px'
+                        }}
+                        onClick={() => setShowModal(true)}>
+                        {isFetching}
+                        <CardContent sx={{ flexDirection: 'row', alignItems: 'center' }}>
+                            {isError || !sensorData ?
+                                <>
+                                    {/*@ts-ignore   */}
+                                    {treatedErrMsg}
+                                </>
+                                :
+                                <>
+                                    <Box sx={{ height: '100%' }}>
+                                        <WaterDropIcon sx={{color: theme.palette.primary.main}} />
+                                    </Box>
+                                    <Box sx={{ mr: 3 }}>
+                                        <Typography>
+                                            Humidity:
+                                        </Typography>
+                                    </Box>
+                                    <Box>
+                                        <Typography>
+                                            {sensorData?.data?.humidity} %
+                                        </Typography>
+                                    </Box>
+                                </>
+                            }
+                        </CardContent>
+                    </Card>
+                </Box>
             }
             <Modal
                 open={showModal}
                 onClose={() => setShowModal(false)}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                    <ModalDialog sx={{ width: '90vw' }}>
+                    <ModalDialog sx={{ width: '95vw' }}>
                         <ModalClose />
                         <Typography>Sensor Configuration</Typography>
                         <Grid container spacing={2}>
@@ -262,7 +312,7 @@ const SensorCard = (props: any) => {
                         </Grid>
                         <Box sx={{ border: "1px solid", p: 1 }}>
                             <Grid container spacing={2}>
-                                <Grid md={12}>
+                                <Grid md={9}>
                                     <Box sx={{ border: "1px solid", p: 1, mt: 2, width: '100%' }}>
                                         <Typography sx={{ textAlign: "center" }}>Temperature Thresholds</Typography>
                                         <CustomSlider
@@ -279,6 +329,7 @@ const SensorCard = (props: any) => {
                                             max={40}
                                             thresholdMarks={[10, 15, 28, 35]}
                                             onChangeCallback={(e, value) => {
+                                                console.log(value)
                                                 setValue("minCriticalTemperatureThreshold", value[0]);
                                                 setValue("minWarningTemperatureThreshold", value[1]);
                                                 setValue("maxWarningTemperatureThreshold", value[2]);
@@ -295,11 +346,14 @@ const SensorCard = (props: any) => {
                                         />
                                     </Box>
                                 </Grid>
+                                <Grid md={3}>
+                                    <GaugeTemperature sensor={{ ...thresholds, data: sensorData?.data }} />
+                                </Grid>
                             </Grid>
                         </Box>
                         <Box sx={{ border: "1px solid", p: 1 }}>
                             <Grid container spacing={2}>
-                                <Grid md={12}>
+                                <Grid md={9}>
                                     <Box sx={{ border: "1px solid", p: 2, mt: 2, width: '100%' }}>
                                         <Typography sx={{ textAlign: "center" }}>Humidity Thresholds</Typography>
                                         <CustomSlider
@@ -332,6 +386,9 @@ const SensorCard = (props: any) => {
                                             suffix="%"
                                         />
                                     </Box>
+                                </Grid>
+                                <Grid md={3}>
+                                    <GaugeHumidity sensor={{ ...thresholds, data: sensorData?.data }} />
                                 </Grid>
                             </Grid>
                         </Box>

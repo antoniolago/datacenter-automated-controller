@@ -8,6 +8,7 @@ import { isEmptyObject, mergeObjects } from "./hooks/utils";
 import { Dimensions, defaultDimensions } from "./types/Dimensions";
 import { PointerRef, defaultPointerRef } from "./types/Pointer";
 import { Arc, getArcWidthByType } from "./types/Arc";
+import useErrorBoundary from "./hooks/error-boundary";
 /*
 GaugeComponent creates a gauge chart using D3
 The chart is responsive and will have the same width as the "container"
@@ -17,6 +18,14 @@ The svg element surrounding the gauge will always be square
 "container" is the div where the chart should be placed
 */
 const GaugeComponent = (props: Partial<GaugeComponentProps>) => {
+  const ErrorBoundary = useErrorBoundary();
+  return (
+      <ErrorBoundary>
+        <GaugeComponentt {...props} />
+      </ErrorBoundary>
+  );
+};
+const GaugeComponentt = (props: Partial<GaugeComponentProps>) => {
   const svg = useRef<any>({});
   const tooltip = useRef<any>({});
   const g = useRef<any>({});
@@ -63,11 +72,13 @@ const GaugeComponent = (props: Partial<GaugeComponentProps>) => {
 
   const shouldInitChart = () => {
     let arcsPropsChanged = (JSON.stringify(prevProps.current.arc) !== JSON.stringify(mergedProps.current.arc));
+    // let subArcsPropsChanged = (JSON.stringify(prevProps.current.arc.subArc) !== JSON.stringify(mergedProps.current.arc.subArcs));
     let pointerPropsChanged = (JSON.stringify(prevProps.current.pointer) !== JSON.stringify(mergedProps.current.pointer));
     let valueChanged = (JSON.stringify(prevProps.current.value) !== JSON.stringify(mergedProps.current.value));
     let minValueChanged = (JSON.stringify(prevProps.current.minValue) !== JSON.stringify(mergedProps.current.minValue));
     let maxValueChanged = (JSON.stringify(prevProps.current.maxValue) !== JSON.stringify(mergedProps.current.maxValue));
-    return arcsPropsChanged || pointerPropsChanged || valueChanged || minValueChanged || maxValueChanged;
+    console.log(arcsPropsChanged)
+    return arcsPropsChanged || pointerPropsChanged || valueChanged || minValueChanged || maxValueChanged ;
   }
   useLayoutEffect(() => {
     updateMergedProps();
@@ -79,7 +90,7 @@ const GaugeComponent = (props: Partial<GaugeComponentProps>) => {
   useEffect(() => {
     const observer = new MutationObserver(function () {
       if (!selectedRef.current?.offsetParent) return;
-      
+
       chartHooks.renderChart(gauge, true);
       observer.disconnect()
     });

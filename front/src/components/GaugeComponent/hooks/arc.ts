@@ -378,6 +378,7 @@ const verifySubArcsLimits = (gauge: Gauge) => {
   let prevLimit: number | undefined = undefined;
   for (const subArc of gauge.props.arc?.subArcs || []) {
     const limit = subArc.limit;
+    return;
     if (typeof limit !== 'undefined') {
       // Check if the limit is within the valid range
       if (limit < minValue || limit > maxValue)

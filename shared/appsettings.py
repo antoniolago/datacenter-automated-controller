@@ -60,7 +60,9 @@ class AppSettings:
     @property
     def UPS_CONF_PATH(self):
         return self._get_setting('UPS_CONF_PATH', "/nut/ups.conf")
-
+    @property
+    def API_INTERNAL_URL(self):
+        return self._get_setting("API_INTERNAL_URL", "http://gateway.docker.internal:5000/api")
     @property
     def SQLALCHEMY_DATABASE_URI(self):
         return self._get_setting('DATABASE_URL', 'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'datacenter-automated-controller.db').replace("shared", "api"))

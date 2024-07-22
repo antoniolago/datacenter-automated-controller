@@ -123,7 +123,7 @@ export const CredentialForm = (props: any) => {
                     size="lg"
                 >
                     <Grid container spacing={2}>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={4} sm={12} className="my-2">
                             {props.credential?.id &&
                                 <div hidden>
                                     <TextField
@@ -140,10 +140,10 @@ export const CredentialForm = (props: any) => {
                                 error={errors?.name?.message != undefined}
                                 fullWidth
                                 variant="outlined"
-                                label="Credential's name" />
+                                label="Credential's display name" />
                             <FormHelperText error={true}>{errors?.name?.message?.toString()}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={4} sm={12} className="my-2">
                             <TextField
                                 {...register("user")}
                                 error={errors?.user?.message != undefined}
@@ -152,14 +152,15 @@ export const CredentialForm = (props: any) => {
                                 label="Credential's user" />
                             <FormHelperText error={true}>{errors?.user?.message?.toString()}</FormHelperText>
                         </Grid>
-                        <Grid item md={12} sm={12} className="my-2" sx={{ display: 'hidden' }}>
+                        <Grid item md={4} sm={12} className="my-2" sx={{ display: 'hidden' }}>
                             <TextField
                                 {...register("password")}
                                 error={errors?.password?.message != undefined}
                                 fullWidth
-                                multiline
-                                minRows={4}
-                                maxRows={999}
+                                type="password"
+                                // multiline
+                                // minRows={4}
+                                // maxRows={999}
                                 variant="outlined"
                                 label="Credential's password" />
                         </Grid>

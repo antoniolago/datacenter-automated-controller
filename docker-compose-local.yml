@@ -70,8 +70,9 @@ services:
       
   rule-applier:
     build: ./rule-applier
+    env_file: .env
     volumes:
-      - "./rule-applier/:/app"
+      - "./rule-applier/:/rule-applier"
       - "./shared/:/shared"
     networks:
       - datacenter-automated-controller

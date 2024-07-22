@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 COPY ./rule-applier /rule-applier
 COPY ./shared /shared
 # ENTRYPOINT [ "tail", "-f", "/dev/null" ]
-CMD ["python", "/rule_applier/main.py"]
+CMD ["python", "/rule-applier/main.py"]

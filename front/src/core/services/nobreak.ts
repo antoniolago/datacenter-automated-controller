@@ -47,13 +47,19 @@ const useMutateDeleteNobreak = (id: string) => {
 
 export const useGetNobreakById = (nobreakId: any) => {
   const { api } = useApi();
+  const queryClient = useQueryClient();
   var queryOptions: UseQueryOptions<AxiosResponse<INobreak>, Error, AxiosResponse<INobreak>, any> = {
     queryKey: ["nobreak-" + nobreakId],
     queryFn: () => api.get(`${apiRoutes.getNobreakById}/${nobreakId}`),
     retry: true,
     // staleTime: 2000,
     refetchInterval: 10000, //10s
-    enabled: true
+    enabled: true,
+    placeholderData: () => {
+      // Use the smaller/preview version of the blogPost from the 'blogPosts'
+      // query as the placeholder data for this blogPost query
+      return queryClient.getQueryData(['nobreak-'+nobreakId])
+    }
   };
   const context = useQuery(queryOptions)
   // useEffect(() => {

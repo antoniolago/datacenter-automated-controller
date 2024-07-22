@@ -7,4 +7,4 @@ COPY ./requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
 
 # ENTRYPOINT [ "tail", "-f", "/dev/null" ]
-CMD ["python", "rule_applier.py"]
+CMD ["python", "/rule-applier/main.py"]
