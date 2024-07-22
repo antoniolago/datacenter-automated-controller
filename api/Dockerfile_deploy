@@ -25,5 +25,5 @@ COPY ./shared /shared
 # RUN flask db upgrade
 
 #Gotta install Adafruit_DHT manually inside the prod container since the builder is not a PI environment
-ENTRYPOINT ["/api/entrypoint.sh"]
+ENTRYPOINT ["/api/entrypoint_deploy.sh"]
 # ENTRYPOINT [ "tail", "-f", "/dev/null" ]
