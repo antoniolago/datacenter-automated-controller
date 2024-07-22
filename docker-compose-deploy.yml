@@ -3,7 +3,7 @@ services:
   api:
     env_file: .deploy.env
     hostname: dac-api
-    image: ghcr.io/antoniolago/datacenter-automated-controller-api:${IMAGE_TAG}
+    image: ghcr.io/antoniolago/datacenter-automated-controller-api:v0.1.82
     privileged: true
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -20,14 +20,14 @@ services:
     depends_on:
       - redis
   frontend:
-    image: ghcr.io/antoniolago/datacenter-automated-controller-front:${IMAGE_TAG}
+    image: ghcr.io/antoniolago/datacenter-automated-controller-front:v0.1.82
     ports:
       - 8090:80
     depends_on:
       - api
   nut:
     env_file: .deploy.env
-    image: ghcr.io/antoniolago/datacenter-automated-controller-nut:${IMAGE_TAG}
+    image: ghcr.io/antoniolago/datacenter-automated-controller-nut:v0.1.82
     privileged: true
     ports:
       - "3493:3493"
@@ -43,7 +43,7 @@ services:
   nut-launcher:
     restart: on-failure
     env_file: .deploy.env
-    image: ghcr.io/antoniolago/datacenter-automated-controller-nut-launcher:${IMAGE_TAG}
+    image: ghcr.io/antoniolago/datacenter-automated-controller-nut-launcher:v0.1.82
     depends_on:
       - api
       - nut
@@ -60,7 +60,7 @@ services:
       - datacenter-automated-controller
 
   rule-applier:
-    image: ghcr.io/antoniolago/datacenter-automated-controller-rule-applier:${IMAGE_TAG}
+    image: ghcr.io/antoniolago/datacenter-automated-controller-rule-applier:v0.1.82
     volumes:
       - "/opt/datacenter-automated-controller/rule-applier/:/app"
     networks:
