@@ -132,8 +132,8 @@ const SensorCard = (props: any) => {
         ) {
             return "danger";
         } else if (
-            humidity > minWarningHumidityThreshold ||
-            humidity < maxWarningHumidityThreshold
+            humidity < minWarningHumidityThreshold ||
+            humidity > maxWarningHumidityThreshold
         ) {
             return "warning";
         } else {
@@ -155,8 +155,8 @@ const SensorCard = (props: any) => {
         ) {
             return "danger";
         } else if (
-            temperature > minWarningTemperatureThreshold ||
-            temperature < maxWarningTemperatureThreshold
+            temperature < minWarningTemperatureThreshold ||
+            temperature > maxWarningTemperatureThreshold
         ) {
             return "warning";
         } else {
@@ -185,7 +185,7 @@ const SensorCard = (props: any) => {
             .finally(() => setLoadingSubmit(false));
     };
 
-    const thresholds = getValues();
+    const thresholds = watch();
     const tempCardColor = sensorData ? getTempCardColor(sensorData, thresholds) : "danger";
     const humiCardColor = sensorData ? getHumiCardColor(sensorData, thresholds) : "danger";
     //@ts-ignore
@@ -388,7 +388,7 @@ const SensorCard = (props: any) => {
                                     </Box>
                                 </Grid>
                                 <Grid md={3}>
-                                    <GaugeHumidity sensor={{ ...thresholds, data: sensorData?.data }} />
+                                    <GaugeHumidity sensor={{ ...watch(), data: sensorData?.data }} />
                                 </Grid>
                             </Grid>
                         </Box>

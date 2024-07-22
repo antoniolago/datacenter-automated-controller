@@ -72,13 +72,13 @@ const GaugeComponentt = (props: Partial<GaugeComponentProps>) => {
 
   const shouldInitChart = () => {
     let arcsPropsChanged = (JSON.stringify(prevProps.current.arc) !== JSON.stringify(mergedProps.current.arc));
-    // let subArcsPropsChanged = (JSON.stringify(prevProps.current.arc.subArc) !== JSON.stringify(mergedProps.current.arc.subArcs));
+    let subArcsPropsChanged = (JSON.stringify(prevProps.current.arc?.subArc) !== JSON.stringify(mergedProps.current?.arc.subArcs));
     let pointerPropsChanged = (JSON.stringify(prevProps.current.pointer) !== JSON.stringify(mergedProps.current.pointer));
     let valueChanged = (JSON.stringify(prevProps.current.value) !== JSON.stringify(mergedProps.current.value));
     let minValueChanged = (JSON.stringify(prevProps.current.minValue) !== JSON.stringify(mergedProps.current.minValue));
     let maxValueChanged = (JSON.stringify(prevProps.current.maxValue) !== JSON.stringify(mergedProps.current.maxValue));
     console.log(arcsPropsChanged)
-    return arcsPropsChanged || pointerPropsChanged || valueChanged || minValueChanged || maxValueChanged ;
+    return arcsPropsChanged || pointerPropsChanged || valueChanged || minValueChanged || maxValueChanged || subArcsPropsChanged;
   }
   useLayoutEffect(() => {
     updateMergedProps();

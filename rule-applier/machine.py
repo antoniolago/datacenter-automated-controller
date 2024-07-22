@@ -11,7 +11,7 @@ from shared.api import Api
 from logger import logger
 # Set up logging
 class Machine:
-    def __init__(self, machine):
+    def __init__(self, machine, nobreak):
         self.id = machine["id"]
         self.name = machine["name"]
         self.description = machine["description"]
@@ -22,7 +22,11 @@ class Machine:
         self.nobreakId = machine["nobreakId"]
 
         self.ruleId = machine["ruleId"]
-        self.rule = machine["rule"]
+        if(machine["ruleId"] == "inherit"):
+        
+            self.rule = nobreak["rule"]
+        else:
+            self.rule = machine["rule"]
 
         self.credentialId = machine["credentialId"]
         self.credential = machine["credential"]
@@ -96,8 +100,8 @@ class Machine:
         rule = self.rule
 
         logger.info("Fetching sensor data...")
-        humidity = sensorData["data"]["humidity"]
-        temperature = sensorData["data"]["temperature"]
+        humidity = sensorData['data']['data']["humidity"]
+        temperature = sensorData['data']['data']["temperature"]
         logger.info(f"Sensor data - Humidity: {humidity}, Temperature: {temperature}")
         if nobreak.batteryCharge is not None:
             isNobreakStatsAvailable = True
@@ -120,9 +124,6 @@ class Machine:
             )
         ) and self.isOnline
         logger.info(f"Should shutdown: {shouldShutdown}")
-        
-        
-        
         shouldWakeOnLan = shouldWakeOnLan = ( \
                             not self.isOnline\
                             and (\

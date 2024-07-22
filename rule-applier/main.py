@@ -24,8 +24,16 @@ while True:
 
     logger.info("UPSs found: " + str(len(upsList)))
     logger.info("Getting sensor data...")
-    sensorResponse = api.get("/sensor/0")
-    logger.info(f"Temperature: {sensorResponse['data']['temperature']} - Humidity: {sensorResponse['data']['humidity']}")
+    sensorResponse = api.get("/sensor/1")
+    #with null check
+    logger.info("Sensor data received")
+    logger.info(sensorResponse)
+    if(sensorResponse['data']['data'] == None):
+        logger.error("Sensor data is null")
+    else:
+        sensor = sensorResponse['data']['data']
+        logger.info(sensor)
+        # logger.info(f"Temperature: {sensor["temperature"]} - Humidity: {sensor["humidity"]}")
     #describe each ups
     for ups in upsList:
         logger.info(f"=======================UPS {ups.name} START =======================")

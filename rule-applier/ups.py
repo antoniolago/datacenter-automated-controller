@@ -42,5 +42,5 @@ class Ups:
 
     def instantiate_machines(self, ups):
         for machine in ups['machines']:
-            self.machines.append(Machine(machine))
+            self.machines.append(Machine(machine, ups))
     
