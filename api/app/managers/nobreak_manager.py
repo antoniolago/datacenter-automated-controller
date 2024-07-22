@@ -57,7 +57,6 @@ class NobreakManager(BaseManager):
     def add_nobreak(self, obj):
         obj['arguments'] = self.argument_manager.map_obj_list(obj['arguments'])
         response = self.add(obj)
-        self.redis.publish_to_channel(self.appsettings.REDIS_CHANGE_NOBREAK_CONFIG_EVENT.replace('{0}', str(response['id']), "add"))
         if is_response_success(response):
             self.add_nobreak_to_ups_conf(self.mapped_obj)
             db.session.commit()

@@ -8,7 +8,7 @@ import { Machines } from '@/pages/Nobreak/Machines';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { AppSettingsService } from '@/core/services/appsettings';
 import { NobreakService } from '@/core/services/nobreak';
-import { Alert, Box, Button, CircularProgress, Grid, Modal, ModalClose, ModalDialog, Typography } from '@mui/joy';
+import { Alert, Box, Button, CircularProgress, Grid, Modal, ModalClose, ModalDialog, Typography, useTheme } from '@mui/joy';
 import GaugeComponent from '@/components/GaugeComponent';
 import { NobreakForm } from '../Forms/Nobreak';
 import DeleteNobreakModal from '@/components/DeleteNobreakModal';
@@ -17,6 +17,7 @@ import Warning from '@mui/icons-material/Warning';
 
 export const NobreakPage = () => {
 	const { id } = useParams();
+	const theme = useTheme()
 	const [openConsole, setOpenConsole] = useState(false);
 	const { data: nobreak } = NobreakService.useGetNobreakById(id);
 	const { data: appSettings } = AppSettingsService.useGetAppSettings();
@@ -75,7 +76,7 @@ export const NobreakPage = () => {
 				}
 				<Box >
 					<Grid container spacing={2}>
-						<Grid md={4} sx={{
+						<Grid md={4} sm={12} sx={{
 							".MuiPaper-root": { filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)" }
 						}}>
 							<Paper
@@ -100,9 +101,11 @@ export const NobreakPage = () => {
 											strokeWidth: 2
 										},
 										batteryMeter: {
-											fill: 'green',
+											//@ts-ignore
+											fill: theme.palette.success.main,
 											lowBatteryValue: 15,
-											lowBatteryFill: 'red',
+											//@ts-ignore
+											lowBatteryFill: theme.palette.error.main,
 											outerGap: 1,
 											noOfCells: 1, // more than 1, will create cell battery
 											interCellsGap: 0.8
@@ -116,7 +119,8 @@ export const NobreakPage = () => {
 										readingText: {
 											lightContrastColor: '#111',
 											darkContrastColor: 'black',
-											lowBatteryColor: 'red',
+											//@ts-ignore
+											lowBatteryColor: theme.palette.error.main,
 											fontFamily: 'Helvetica',
 											fontSize: 14,
 											showPercentage: true
@@ -134,7 +138,7 @@ export const NobreakPage = () => {
 								</Typography> */}
 							</Paper>
 						</Grid>
-						<Grid md={8} sx={{
+						<Grid sm={12} md={8} sx={{
 							".MuiPaper-root": { filter: nobreak?.batteryCharge >= 0 ? "none" : "blur(3.1px)" }
 						}}>
 							<Paper
@@ -142,18 +146,32 @@ export const NobreakPage = () => {
 								sx={{ height: '100%' }}
 							>
 								<Grid container>
-									<Grid md={4}>
+									<Grid sm={12} md={4}>
 										<GaugeComponent
-											value={nobreak?.inputVoltage ?? 0}
+											value={nobreak?.inputVoltage}
 											minValue={0}
 											maxValue={550}
 											arc={
 												{
 													subArcs:
 														[
-															{ color: 'green', limit: 240, showTick: true },
-															{ color: 'yellow', limit: 300, showTick: true },
-															{ color: 'red', showTick: true }
+															{
+																//@ts-ignore
+																color: theme.palette.success.main,
+																limit: 220,
+																showTick: true
+															},
+															{
+																//@ts-ignore
+																color: theme.palette.warning.main,
+																limit: 250,
+																showTick: true
+															},
+															{
+																//@ts-ignore
+																color: theme.palette.error.main,
+																showTick: true
+															}
 														]
 												}
 											}
@@ -176,19 +194,33 @@ export const NobreakPage = () => {
 											}}
 										/>
 									</Grid>
-									<Grid md={4}>
+									<Grid sm={12} md={4}>
 										<GaugeComponent
-											value={nobreak?.outputVoltage ?? 0}
+											value={nobreak?.outputVoltage}
 											minValue={0}
 											maxValue={550}
 											arc={
 												{
 													subArcs:
-														[
-															{ color: 'green', limit: 240, showTick: true },
-															{ color: 'yellow', limit: 300, showTick: true },
-															{ color: 'red', showTick: false }
-														]
+													[
+														{
+															//@ts-ignore
+															color: theme.palette.success.main,
+															limit: 220,
+															showTick: true
+														},
+														{
+															//@ts-ignore
+															color: theme.palette.warning.main,
+															limit: 250,
+															showTick: true
+														},
+														{
+															//@ts-ignore
+															color: theme.palette.error.main,
+															showTick: true
+														}
+													]
 												}
 											}
 											labels={{
@@ -210,19 +242,32 @@ export const NobreakPage = () => {
 											}}
 										/>
 									</Grid>
-									<Grid md={4}>
+									<Grid sm={12} md={4}>
 										{/* <Typography>Input Voltage</Typography> */}
 										<GaugeComponent
-											value={nobreak?.load ?? 0}
+											value={nobreak?.load}
 											minValue={0}
 											maxValue={100}
 											arc={
 												{
 													subArcs:
 														[
-															{ color: 'green', limit: 15, showTick: true },
-															{ color: 'yellow', limit: 70, showTick: true },
-															{ color: 'red', showTick: false },
+															{
+																//@ts-ignore
+																color: theme.palette.success.main,
+																limit: 75, showTick: true
+															},
+															{
+																//@ts-ignore
+																color: theme.palette.warning.main,
+																limit: 85,
+																showTick: true
+															},
+															{
+																//@ts-ignore
+																color: theme.palette.error.main,
+																showTick: false
+															},
 														]
 												}
 											}

@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography';
-import { Alert, Box, Grid } from '@mui/joy';
+import { Alert, Box, Grid, useTheme } from '@mui/joy';
 import { useApi } from '@/core/services/api';
 import GaugeComponent from '../GaugeComponent';
 import { SensorService } from '@/core/services/sensor';
@@ -19,6 +19,7 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
     const { data: nobreak } = NobreakService.useGetNobreakById(id);
     const { rule, machine } = props;
     const { data: sensor, isFetching } = SensorService.useGetData();
+    const theme = useTheme()
     const { api } = useApi();
     return (
         rule && sensor &&
@@ -60,7 +61,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                     },
                                     {
                                         limit: rule.maxTemperature - 4,
-                                        color: '#5BE12C',
+                                        //@ts-ignore
+                                        color: theme.palette.success.main,
                                         showTick: true,
                                         tooltip: {
                                             text: 'OK temperature!'
@@ -68,7 +70,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                     },
                                     {
                                         limit: rule.maxTemperature - 2,
-                                        color: '#F5CD19',
+                                        //@ts-ignore
+                                        color: theme.palette.warning.main,
                                         showTick: true,
                                         tooltip: {
                                             text: 'High temperature!'
@@ -76,7 +79,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                     },
                                     {
                                         limit: rule.maxTemperature,
-                                        color: '#EA4228',
+                                        //@ts-ignore
+                                        color: theme.palette.error.main,
                                         tooltip: {
                                             text: `Too high temperature! ${machine?.name} will shutdown`
                                         }
@@ -84,7 +88,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                 ]
                             }}
                             pointer={{
-                                color: '#345243',
+                                //@ts-ignore
+                                color: theme.palette.text.main,
                                 length: 0.90,
                                 width: 25,
                                 // elastic: true,
@@ -123,7 +128,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                 subArcs: [
                                     {
                                         limit: rule.minHumidity,
-                                        color: '#EA4228',
+                                        //@ts-ignore
+                                        color: theme.palette.error.main,
                                         showTick: true,
                                         tooltip: {
                                             text: 'Too low humidity!'
@@ -134,7 +140,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                     },
                                     {
                                         limit: rule.minHumidity + 5,
-                                        color: '#F5CD19',
+                                        //@ts-ignore
+                                        color: theme.palette.warning.main,
                                         showTick: true,
                                         tooltip: {
                                             text: 'Low humidity!'
@@ -142,7 +149,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                     },
                                     {
                                         limit: rule.maxHumidity - 5,
-                                        color: '#5BE12C',
+                                        //@ts-ignore
+                                        color: theme.palette.success.main,
                                         showTick: true,
                                         tooltip: {
                                             text: 'OK humidity!'
@@ -150,14 +158,16 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                     },
                                     {
                                         limit: rule.maxHumidity,
-                                        color: '#F5CD19',
+                                        //@ts-ignore
+                                        color: theme.palette.warning.main,
                                         showTick: true,
                                         tooltip: {
                                             text: 'High humidity!'
                                         }
                                     },
                                     {
-                                        color: '#EA4228',
+                                        //@ts-ignore
+                                        color: theme.palette.error.main,
                                         tooltip: {
                                             text: 'Too high humidity!'
                                         }
@@ -165,7 +175,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                 ]
                             }}
                             pointer={{
-                                color: '#345243',
+                                //@ts-ignore
+                                color: theme.palette.text.main,
                                 length: 0.90,
                                 width: 20,
                                 // elastic: true,
@@ -177,7 +188,13 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                 valueLabel: { formatTextValue: value => value + '%' },
                                 tickLabels: {
                                     type: 'outer',
-                                    defaultTickValueConfig: { formatTextValue: value => value + '%', style: { fontSize: 10 } },
+                                    defaultTickValueConfig: { 
+                                        formatTextValue: value => value + '%', 
+                                        style: { 
+                                            fontSize: 10,
+                                            color: theme.palette.text.primary
+                                        } 
+                                    },
                                 }
                             }}
                             value={sensor.data?.humidity}
@@ -228,7 +245,8 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                             subArcs: [
                                                 {
                                                     limit: 50,
-                                                    color: '#EA4228',
+                                                    //@ts-ignore
+                                                    color: theme.palette.error.main,
                                                     showTick: true,
                                                     tooltip: {
                                                         text: 'Too low charge!'
@@ -238,14 +256,16 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                                     onMouseLeave: () => console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"),
                                                 },
                                                 {
-                                                    color: '#F5CD19',
+                                                    //@ts-ignore
+                                                    color: theme.palette.warning.main,
                                                     showTick: true,
                                                     tooltip: {
                                                         text: 'Low charge!'
                                                     }
                                                 },
                                                 {
-                                                    color: '#5BE12C',
+                                                    //@ts-ignore
+                                                    color: theme.palette.success.main,
                                                     showTick: true,
                                                     tooltip: {
                                                         text: 'OK charge!'
@@ -272,7 +292,7 @@ export const RulesDashboard = (props: RulesDashBoardProps) => {
                                                 defaultTickValueConfig: { formatTextValue: value => value + '%', style: { fontSize: 10 } },
                                             },
                                         }}
-                                        value={sensor.charge}
+                                        value={nobreak?.batteryCharge}
                                         minValue={0}
                                         maxValue={100}
                                     />

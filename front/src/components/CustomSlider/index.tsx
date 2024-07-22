@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, Slider } from "@mui/material";
+import { useTheme } from "@mui/joy";
 
 export function CustomSlider(props) {
   const {
@@ -14,6 +15,8 @@ export function CustomSlider(props) {
     suffix,
     ...rest
   } = props;
+
+  var theme = useTheme();
 
   const [value, setValue] = useState(
     reverse ? values?.map((val) => -val) : values
@@ -60,8 +63,7 @@ export function CustomSlider(props) {
   };
 
   return (
-    <Box
-    >
+    <Box>
       <Typography
         id="discrete-slider"
         gutterBottom
@@ -72,7 +74,6 @@ export function CustomSlider(props) {
         {entityName}
       </Typography>
       <Slider
-        
         sx={{
             "& .MuiSlider-track": {
             //   background: `linear-gradient(to right, red 0%, red ${perc[0]}%, yellow ${perc[0]}%, yellow ${perc[1]}%, green ${perc[1]}%, green ${perc[2]}%, yellow ${perc[2]}%, yellow ${perc[3]}%, red ${perc[3]}%, red 100%)`,
@@ -81,21 +82,26 @@ export function CustomSlider(props) {
             "& .MuiSlider-thumb": {
               background: "white",
               "&:nth-of-type(1)": {
-                background: "red"
+                //@ts-ignore
+                background: theme.palette.error.main
               },
               "&:nth-of-type(2)": {
-                background: "yellow"
+                //@ts-ignore
+                background: theme.palette.warning.main
               },
               "&:nth-of-type(3)": {
-                background: "green"
+                //@ts-ignore
+                background: theme.palette.success.main
               },
               "&:nth-of-type(4)": {
-                background: "yellow"
+                //@ts-ignore
+                background: theme.palette.warning.main
               }
             },
             "& .MuiSlider-rail": {
               opacity: 0.9,
-              background: `linear-gradient(to right, red 0%, red ${perc[0]}%, yellow ${perc[0]}%, yellow ${perc[1]}%, green ${perc[1]}%, green ${perc[2]}%, yellow ${perc[2]}%, yellow ${perc[3]}%, red ${perc[3]}%, red 100%)`
+              //@ts-ignore
+              background: `linear-gradient(to right, ${theme.palette.error.main} 0%, ${theme.palette.error.main} ${perc[0]}%, ${theme.palette.warning.main} ${perc[0]}%, ${theme.palette.warning.main} ${perc[1]}%, ${theme.palette.success.main} ${perc[1]}%, ${theme.palette.success.main} ${perc[2]}%, ${theme.palette.warning.main} ${perc[2]}%, ${theme.palette.warning.main} ${perc[3]}%, ${theme.palette.error.main} ${perc[3]}%, ${theme.palette.error.main} 100%)`
             },
             ...style
           }}
