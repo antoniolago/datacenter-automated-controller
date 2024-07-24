@@ -16,6 +16,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import Loading from "@/components/Loading";
 import { ICredential } from "@/core/types/credential";
 import { useApi } from "@/core/services/api";
+import { useQueryClient } from "@tanstack/react-query";
 export const AppContext = createContext(undefined);
 
 export const CredentialForm = (props: any) => {
@@ -24,6 +25,7 @@ export const CredentialForm = (props: any) => {
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [show, setShow] = useState(false);
     const [alert, setAlert] = useState<any>();
+    const queryClient = useQueryClient();
     const validationSchema = Yup.object().shape({
         name: Yup.string(),
         description: Yup.string()
@@ -67,6 +69,7 @@ export const CredentialForm = (props: any) => {
                     setAlert(<Alert severity="error"><AlertTitle>{res.data.message}</AlertTitle>{res.data.error}</Alert>);
                 }
                 setLoadingSubmit(false);
+                queryClient.refetchQueries({queryKey: ['credentials']});
                 if (props.fetchCredentials) props.fetchCredentials();
             })
             .catch((error: any) => {
@@ -120,7 +123,7 @@ export const CredentialForm = (props: any) => {
                     size="lg"
                 >
                     <Grid container spacing={2}>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={4} sm={12} className="my-2">
                             {props.credential?.id &&
                                 <div hidden>
                                     <TextField
@@ -137,10 +140,10 @@ export const CredentialForm = (props: any) => {
                                 error={errors?.name?.message != undefined}
                                 fullWidth
                                 variant="outlined"
-                                label="Credential's name" />
+                                label="Credential's display name" />
                             <FormHelperText error={true}>{errors?.name?.message?.toString()}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={4} sm={12} className="my-2">
                             <TextField
                                 {...register("user")}
                                 error={errors?.user?.message != undefined}
@@ -149,14 +152,15 @@ export const CredentialForm = (props: any) => {
                                 label="Credential's user" />
                             <FormHelperText error={true}>{errors?.user?.message?.toString()}</FormHelperText>
                         </Grid>
-                        <Grid item md={12} sm={12} className="my-2" sx={{ display: 'hidden' }}>
+                        <Grid item md={4} sm={12} className="my-2" sx={{ display: 'hidden' }}>
                             <TextField
                                 {...register("password")}
                                 error={errors?.password?.message != undefined}
                                 fullWidth
-                                multiline
-                                minRows={4}
-                                maxRows={999}
+                                type="password"
+                                // multiline
+                                // minRows={4}
+                                // maxRows={999}
                                 variant="outlined"
                                 label="Credential's password" />
                         </Grid>

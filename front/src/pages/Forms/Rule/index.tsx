@@ -7,9 +7,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import * as Yup from "yup";
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
 import { Modal } from "@/components/Modal";
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import { TextField, createTheme, FormHelperText, MenuItem, InputAdornment } from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 import EditIcon from '@mui/icons-material/Edit';
@@ -18,7 +20,14 @@ import { useApi } from "@/core/services/api";
 import { IRule } from "@/core/types/rule";
 import Loading from "@/components/Loading";
 import { useQueryClient } from "@tanstack/react-query";
-import { Checkbox } from "@mui/joy";
+import { Accordion, AccordionDetails, AccordionSummary, Checkbox, ListItemContent, Typography, useTheme } from "@mui/joy";
+import GaugeComponent from "@/components/GaugeComponent";
+import { SensorService } from "@/core/services/sensor";
+import { useParams } from "react-router-dom";
+import { NobreakService } from "@/core/services/nobreak";
+import GaugeCharge from "@/components/GaugeCharge";
+import GaugeTemperature from "@/components/GaugeTemperature";
+import GaugeHumidity from "@/components/GaugeHumidity";
 
 export const RuleForm = (props: any) => {
     const { api } = useApi();
@@ -27,7 +36,11 @@ export const RuleForm = (props: any) => {
     const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [show, setShow] = useState(false);
     const [alert, setAlert] = useState<any>();
+
+    const { data: sensorData, isError, error, isFetching } = SensorService.useGetData();
     const queryClient = useQueryClient();
+    const { id } = useParams();
+    const { data: nobreak } = NobreakService.useGetNobreakById(id);
     const validationSchema = Yup.object().shape({
         name: Yup.string(),
         description: Yup.string()
@@ -45,6 +58,7 @@ export const RuleForm = (props: any) => {
         chargeToWol: props.rule?.chargeToWol || 0,
         id: props.rule?.id || 0
     }
+    const theme = useTheme();
     const {
         control,
         register,
@@ -84,7 +98,7 @@ export const RuleForm = (props: any) => {
                 setLoadingSubmit(false);
             });
     };
-
+    const watchForm = watch();
     return (
         loading ?
             <Loading />
@@ -128,7 +142,18 @@ export const RuleForm = (props: any) => {
                     }
                     size="lg"
                 >
-                    <Grid container spacing={2}>
+                    <Grid
+                        container
+                        spacing={2}
+                        sx={{
+                            ".accordion-grid": {
+                                paddingTop: "0 !important",
+                            },
+                            ".MuiAccordionDetails-content":
+                            {
+                                alignItems: "center",
+                            }
+                        }}>
                         <Grid item md={6} sm={12} className="my-2">
                             {props.rule?.id &&
                                 <div hidden>
@@ -159,7 +184,7 @@ export const RuleForm = (props: any) => {
                                 label="Description" />
                             <FormHelperText error={true}>{errors?.description?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={3} sm={12} className="my-2">
+                        <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("minTemperature")}
                                 error={errors?.minTemperature?.message != undefined}
@@ -172,7 +197,7 @@ export const RuleForm = (props: any) => {
                                 type="number" />
                             <FormHelperText error={true}>{errors?.minTemperature?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={3} sm={12} className="my-2">
+                        <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("maxTemperature")}
                                 error={errors?.maxTemperature?.message != undefined}
@@ -185,7 +210,7 @@ export const RuleForm = (props: any) => {
                                 type="number" />
                             <FormHelperText error={true}>{errors?.maxTemperature?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={3} sm={12} className="my-2">
+                        <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("minHumidity")}
                                 error={errors?.minHumidity?.message != undefined}
@@ -198,7 +223,7 @@ export const RuleForm = (props: any) => {
                                 type="number" />
                             <FormHelperText error={true}>{errors?.minHumidity?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={3} sm={12} className="my-2">
+                        <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("maxHumidity")}
                                 error={errors?.maxHumidity?.message != undefined}
@@ -211,6 +236,7 @@ export const RuleForm = (props: any) => {
                                 type="number" />
                             <FormHelperText error={true}>{errors?.maxHumidity?.message}</FormHelperText>
                         </Grid>
+                        {/*
                         <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("wolAttempts")}
@@ -221,6 +247,7 @@ export const RuleForm = (props: any) => {
                                 type="number" />
                             <FormHelperText error={true}>{errors?.wolAttempts?.message}</FormHelperText>
                         </Grid>
+                        */}
                         <Grid item md={2} sm={12} className="my-2">
                             <TextField
                                 {...register("chargeToWol")}
@@ -247,9 +274,78 @@ export const RuleForm = (props: any) => {
                                 type="number" />
                             <FormHelperText error={true}>{errors?.chargeToShutdown?.message}</FormHelperText>
                         </Grid>
-                        <Grid item md={6} sm={12} className="my-2">
+                        <Grid item md={4} sm={12} className="accordion-grid" sx={{ textAlign: "-webkit-center" }}>
 
-                            <Checkbox label="Keep machine online" checked={watch("forceOnline")} {...register("forceOnline")}/>
+                            <Accordion defaultExpanded sx={{ witdh: "100%" }}>
+
+                                <AccordionSummary>
+                                    {/* <Avatar color="primary">
+                                        <TapAndPlayRoundedIcon />
+                                    </Avatar> */}
+                                    <Typography level="body-sm">
+
+                                        <DeviceThermostatIcon />Rule's Temperature Visualization
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails sx={{ textAlign: "-webkit-center", alignItems: "center" }}>
+                                    <GaugeTemperature rule={watch()} sensor={sensorData} />
+                                    {sensorData.data?.temperature ?
+                                        //@ts-ignore
+                                        <Typography variant="h6" sx={{ textAlign: "center" }}>Real Time Temperature</Typography>
+                                        :
+                                        //@ts-ignore
+                                        <Typography variant="h6" sx={{ textAlign: "center" }}>Sensor unavailable. Using mocked temperature</Typography>
+                                    }
+                                </AccordionDetails>
+                            </Accordion>
+                        </Grid>
+                        <Grid item md={4} sm={12} className="accordion-grid" sx={{ textAlign: "-webkit-center", pt: 0 }}>
+                            <Accordion defaultExpanded sx={{ witdh: "100%" }}>
+
+                                <AccordionSummary>
+                                    {/* <Avatar color="primary">
+                                        <TapAndPlayRoundedIcon />
+                                    </Avatar> */}
+                                    <Typography level="body-sm">
+                                        <WaterDropIcon />Rule's Humidity Visualization
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails sx={{ textAlign: "-webkit-center", alignItems: "center" }}>
+                                    <GaugeHumidity rule={watch()} sensor={sensorData} />
+                                    {sensorData.data?.humidity ?
+                                        //@ts-ignore
+                                        <Typography variant="h6" sx={{ textAlign: "center" }}>Real Time Humidity</Typography>
+                                        :
+                                        //@ts-ignore
+                                        <Typography variant="h6" sx={{ textAlign: "center" }}>Sensor unavailable. Using mocked humidity</Typography>
+                                    }
+                                </AccordionDetails>
+                            </Accordion>
+                        </Grid>
+                        <Grid item md={4} sm={12} className="accordion-grid" sx={{ textAlign: "-webkit-center", pt: 0 }}>
+                            <Accordion defaultExpanded sx={{ witdh: "100%" }}>
+
+                                <AccordionSummary>
+                                    {/* <Avatar color="primary">
+                                        <TapAndPlayRoundedIcon />
+                                    </Avatar> */}
+                                    <Typography level="body-sm">
+
+                                        <WaterDropIcon />Rule's Charge Visualization
+                                    </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails sx={{ textAlign: "-webkit-center", alignItems: "center" }}>
+
+                                    <GaugeCharge ruleForm rule={watch()} />
+                                    <Typography sx={{ textAlign: "center" }}>
+                                        Charge
+                                    </Typography>
+                                </AccordionDetails>
+                            </Accordion>
+                        </Grid>
+                        <Grid hidden item md={6} sm={12} className="my-2">
+
+                            <Checkbox label="Keep machine online" checked={watchForm["forceOnline"]} {...register("forceOnline")} />
                         </Grid>
                     </Grid>
                 </Modal >

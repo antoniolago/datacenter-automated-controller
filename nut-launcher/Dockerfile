@@ -12,5 +12,5 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
 
-# ENTRYPOINT [ "tail", "-f", "/dev/null" ]
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+# ENTRYPOINT ["python", "main.py"]

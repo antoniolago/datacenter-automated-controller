@@ -82,7 +82,8 @@ const usePostShutdownMachine = (id: string) => {
       toast.success("Machine ordered to shutdown.");
     })
     .catch((error: any) => {
-      toast.error(error.response.data.error);
+      console.log(error)
+      toast.error(error.response.data.error.error);
     }),
     retry: false,
   };

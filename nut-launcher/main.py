@@ -1,5 +1,9 @@
 from launchers.launcher import Launcher
+import pathlib
+import sys
 import time
+_parentdir = pathlib.Path(__file__).parent.parent.parent.resolve()
+sys.path.insert(0, str(_parentdir))
 
 launcher = Launcher()
 while True:

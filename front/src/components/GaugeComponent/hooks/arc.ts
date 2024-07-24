@@ -49,54 +49,50 @@ const onArcMouseOut = (event: any, d: any, gauge: Gauge) => {
 const onArcMouseClick = (event: any, d: any) => {
   if (d.data.onMouseClick != undefined) d.data.onMouseClick(event);
 }
-
 export const setArcData = (gauge: Gauge) => {
   let arc = gauge.props.arc as Arc;
   let minValue = gauge.props.minValue as number;
   let maxValue = gauge.props.maxValue as number;
-  // Determine number of arcs to display
   let nbArcsToDisplay: number = arc?.nbSubArcs || (arc?.subArcs?.length || 1);
 
   let colorArray = getColors(nbArcsToDisplay, gauge);
+
   if (arc?.subArcs && !arc?.nbSubArcs) {
     let lastSubArcLimit = 0;
     let lastSubArcLimitPercentageAcc = 0;
     let subArcsLength: Array<number> = [];
     let subArcsLimits: Array<number> = [];
     let subArcsTooltip: Array<Tooltip> = [];
+    
     arc?.subArcs?.forEach((subArc, i) => {
       let subArcLength = 0;
-      //map limit for non defined subArcs limits
       let subArcRange = 0;
       let limit = subArc.limit as number;
+
       if (subArc.length != undefined) {
         subArcLength = subArc.length;
         limit = utils.getCurrentGaugeValueByPercentage(subArcLength + lastSubArcLimitPercentageAcc, gauge);
       } else if (subArc.limit == undefined) {
         subArcRange = lastSubArcLimit;
-        let remainingPercentageEquallyDivided: number | undefined = undefined;
         let remainingSubArcs = arc?.subArcs?.slice(i);
         let remainingPercentage = (1 - utils.calculatePercentage(minValue, maxValue, lastSubArcLimit)) * 100;
-        if (!remainingPercentageEquallyDivided) {
-          remainingPercentageEquallyDivided = (remainingPercentage / Math.max(remainingSubArcs?.length || 1, 1)) / 100;
-        }
+        let remainingPercentageEquallyDivided = (remainingPercentage / Math.max(remainingSubArcs?.length || 1, 1)) / 100;
+
         limit = lastSubArcLimit + (remainingPercentageEquallyDivided * 100);
         subArcLength = remainingPercentageEquallyDivided;
       } else {
         subArcRange = limit - lastSubArcLimit;
-        // Calculate arc length based on previous arc percentage
-        if (i !== 0) {
-          subArcLength = utils.calculatePercentage(minValue, maxValue, limit) - lastSubArcLimitPercentageAcc;
-        } else {
-          subArcLength = utils.calculatePercentage(minValue, maxValue, subArcRange);
-        }
+        subArcLength = i !== 0 ? utils.calculatePercentage(minValue, maxValue, limit) - lastSubArcLimitPercentageAcc : utils.calculatePercentage(minValue, maxValue, subArcRange);
       }
+
       subArcsLength.push(subArcLength);
       subArcsLimits.push(limit);
       lastSubArcLimitPercentageAcc = subArcsLength.reduce((count, curr) => count + curr, 0);
       lastSubArcLimit = limit;
+
       if (subArc.tooltip != undefined) subArcsTooltip.push(subArc.tooltip);
     });
+
     let subArcs = arc.subArcs as SubArc[];
     gauge.arcData.current = subArcsLength.map((length, i) => ({
       value: length,
@@ -110,7 +106,6 @@ export const setArcData = (gauge: Gauge) => {
     }));
   } else {
     const arcValue = maxValue / nbArcsToDisplay;
-
     gauge.arcData.current = Array.from({ length: nbArcsToDisplay }, (_, i) => ({
       value: arcValue,
       limit: (i + 1) * arcValue,
@@ -119,6 +114,7 @@ export const setArcData = (gauge: Gauge) => {
     }));
   }
 };
+
 
 const getGrafanaMainArcData = (gauge: Gauge, percent: number | undefined = undefined) => {
   let currentPercentage = percent != undefined ? percent : utils.calculatePercentage(gauge.props.minValue as number,
@@ -382,6 +378,7 @@ const verifySubArcsLimits = (gauge: Gauge) => {
   let prevLimit: number | undefined = undefined;
   for (const subArc of gauge.props.arc?.subArcs || []) {
     const limit = subArc.limit;
+    return;
     if (typeof limit !== 'undefined') {
       // Check if the limit is within the valid range
       if (limit < minValue || limit > maxValue)

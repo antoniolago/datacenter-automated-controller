@@ -14,13 +14,13 @@ export const UpsdOutput = (props: any) => {
   const { data: initUpsdOutput } = NobreakService.useGetUpsdOutput();
   useEffect(() => {
     if (initUpsdOutput)
-      setUpsdOutput(initUpsdOutput);
+      setUpsdOutput(initUpsdOutput.reverse());
   }, [initUpsdOutput]);
   useEffect(() => {
     //Get data in real time
     socket.on(
       appSettings?.SOCKET_IO_UPSD_EVENT!,
-      (data: any) => setUpsdOutput((prevUpsdOutput: any[]) => [...prevUpsdOutput, ...data])
+      (data: any) => setUpsdOutput((prevUpsdOutput: any[]) => [...prevUpsdOutput, ...data.reverse()])
     );
     return () => {
       socket.off(appSettings?.SOCKET_IO_UPSD_EVENT);

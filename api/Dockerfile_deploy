@@ -3,18 +3,27 @@ WORKDIR /api
 RUN mkdir /shared
 ENV PYTHONPATH=/shared:$PYTHONPATH
 
-RUN apk update && apk add nut gcc musl-dev libffi-dev
+RUN apk update && apk add nut gcc musl-dev libffi-dev openssh git
 
 RUN pip install --upgrade pip
 COPY ./api/requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
+RUN pip install --upgrade pip setuptools wheel pigpio_dht
+########################## INSTALL ADAFRUIT ######################################
+# WORKDIR /adafruit_install
+# RUN apk add --no-cache git
+# RUN git clone https://github.com/adafruit/Adafruit_Python_DHT
+# RUN cd Adafruit_Python_DHT && python setup.py build && python setup.py install --force-pi
+########################## INSTALL ADAFRUIT ######################################
+WORKDIR /api
 COPY ./api /api
+COPY ./nut /nut
+COPY ./shared /shared
 
 # RUN flask db init
 # RUN flask db migrate -m "test message"
 # RUN flask db upgrade
-
-COPY ./shared /shared
+RUN chmod +x /api/entrypoint_deploy.sh
 #Gotta install Adafruit_DHT manually inside the prod container since the builder is not a PI environment
-ENTRYPOINT ["sh", "-c", "pip install Adafruit_DHT && python /api/main.py"]
+ENTRYPOINT ["/api/entrypoint_deploy.sh"]
 # ENTRYPOINT [ "tail", "-f", "/dev/null" ]

@@ -6,4 +6,5 @@ RUN pip install --upgrade pip
 COPY ./requirements.txt ./requirements.txt
 RUN pip install -r requirements.txt
 
-ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+# ENTRYPOINT [ "tail", "-f", "/dev/null" ]
+CMD ["python", "/rule-applier/main.py"]

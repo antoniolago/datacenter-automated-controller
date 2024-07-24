@@ -14,12 +14,11 @@ services:
     volumes:
       - "./api:/api"
       - "./shared:/shared"
-      - "./nut/ups.conf:/nut/ups.conf"
+      - "./nut:/nut"
     networks:
       - datacenter-automated-controller
     depends_on:
       - redis
-      - wol-listener
   # frontend:
   #   build: ./front
   #   environment:
@@ -35,6 +34,7 @@ services:
   #   stdin_open: true
   #   command: npm start
   nut:
+    privileged: true
     env_file: .env
     build: ./nut
     ports:
@@ -47,6 +47,7 @@ services:
     depends_on:
       - api
   nut-launcher:
+    restart: always
     env_file: .env
     depends_on:
       - api
@@ -69,8 +70,10 @@ services:
       
   rule-applier:
     build: ./rule-applier
+    env_file: .env
     volumes:
-      - "./rule-applier/:/app"
+      - "./rule-applier/:/rule-applier"
+      - "./shared/:/shared"
     networks:
       - datacenter-automated-controller
 networks: 

@@ -17,4 +17,5 @@ export const apiRoutes = {
     postWolMachine: '/machine/wol',
     postShutdownMachine: '/machine/shutdown',
     getOperationalSystems: '/machine/operational-systems',
+    getRuleApplierOutput: '/rule-applier/output',
   };

@@ -1,18 +1,24 @@
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from app import app
+from app.managers.sensor_manager import SensorManager
 
-import Adafruit_DHT  # Add this import statement
+@app.route('/api/sensors', methods=["GET"])
+def get_sensors():
+    return SensorManager().get_all(True)
 
-# GPIO pin connected to the DHT sensor
-DHT_PIN = 4
-# Sensor type, DHT22
-DHT_SENSOR = Adafruit_DHT.DHT22
+@app.route('/api/sensor/<id>', methods=["GET"])
+def get_sensor(id):
+    return SensorManager().get_sensor(id, "id")
 
-@app.route('/sensor')
-def get_dht22_data():
-    humidity, temperature = Adafruit_DHT.read_retry(DHT_SENSOR, DHT_PIN)
-    if humidity is not None and temperature is not None:
-        return jsonify({'temperature': temperature, 'humidity': humidity})
-    else:
-        return jsonify({'error': 'Failed to retrieve data'}), 500
+@app.route('/api/sensor', methods=["POST"])
+def add_sensor():
+    return SensorManager().add(request.json, True)
+
+@app.route('/api/sensor', methods=["PUT", "PATCH"])
+def update_sensor():
+    return SensorManager().update(request.json, request.json["id"], "id", True, True)
+
+@app.route('/api/sensor/<id>', methods=["DELETE"])
+def delete_sensor(id):
+    return SensorManager().delete(id, 'id')

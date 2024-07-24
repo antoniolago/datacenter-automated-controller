@@ -18,7 +18,7 @@ else:
 
 # Use the parameter in your script
 if nobreak_id is not None:
-    print(f'The parameter value is {nobreak_id}', flush=True)
+    #print(f'The parameter value is {nobreak_id}', flush=True)
     nut.start_ups_driver(nobreak_id, nobreak_name)
 else:
     print('No parameter value specified', flush=True)

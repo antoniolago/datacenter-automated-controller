@@ -19,9 +19,16 @@ app = Flask(__name__)
 swagger = Swagger(app)
 app.config.from_object(AppSettings())
 app.config["REDIS_URL"] = app.config["REDIS_URL"]
+app.config['APPLICATION_ROOT'] = '/api'
 app.config['SECRET_KEY'] = 'secret!'
 # app.config['DEBUG'] = True
-socketio = SocketIO(app, message_queue=app.config["REDIS_URL"], cors_allowed_origins='*')
+socketio = SocketIO(
+                        app, 
+                        message_queue=app.config["REDIS_URL"], 
+                        cors_allowed_origins='*',
+                        logger=True, 
+                        engineio_logger=True
+                    )
 
 api_v1_cors_config = {"origins": ["http://localhost:8090", "localhost:8090", "snp0:8090", "http://snp0:8090"]}
 CORS(app, resources={"/*": api_v1_cors_config})
